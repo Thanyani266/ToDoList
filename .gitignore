@@ -1,5 +1,5 @@
 # Ignore .env files
-.env
+backend/routes/.env
 
 # Ignore node_modules folder
 node_modules/
