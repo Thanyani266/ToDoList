@@ -10,3 +10,31 @@
 .active-tab{
     background: brown;
 }
+
+/* Default sidebar styling */
+.sidebar {
+    width: 250px; /* Adjust the width as needed */
+    transition: all 0.3s ease; /* Smooth transition for opening and closing */
+  }
+  
+  /* Sidebar when open */
+  .sidebar.open {
+    display: block; /* Sidebar visible */
+  }
+  
+  /* Sidebar when closed */
+  .sidebar.closed {
+    display: none; /* Sidebar hidden */
+  }
+  
+  /* Adjust page content when sidebar is open */
+  .page-content {
+    margin-left: 250px; /* Adjust the margin to match the sidebar width */
+    transition: all 0.3s ease; /* Smooth transition */
+  }
+  
+  /* Adjust page content when sidebar is closed */
+  .page-content.closed {
+    margin-left: 0; /* Remove margin when sidebar is hidden */
+  }
+  

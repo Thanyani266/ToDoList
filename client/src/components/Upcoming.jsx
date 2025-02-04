@@ -2,12 +2,13 @@ import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGr
 import { useContext, useEffect, useState } from "react";
 import ModalOne from "./ModalOne";
 import Modal from "./Modal";
+import PropTypes from 'prop-types';
 import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import { UserContext } from "../context/UserContext";
 import Badge from "./Badge";
 
-const Upcoming = () => {
+const Upcoming = ({ isSidebarOpen }) => {
   const navigate = useNavigate()
   const [data, setData] = useState([]);
   const user = useContext(UserContext)
@@ -226,7 +227,7 @@ const Upcoming = () => {
   console.log(todayTasks);
 
   return (
-    <MDBCol md='8'>
+    <MDBCol className={`${isSidebarOpen ? 'col-md-8' : 'col'}`}>
     <MDBTypography tag='span' className="fw-bold display-6 py-5">
             Upcoming <MDBTypography tag='span' className="float-end ms-auto border bg-secondary px-2 text-light rounded">{todayTasks.length + tomorrowTasks.length + weekendTasks.length}</MDBTypography>
         </MDBTypography>
@@ -411,5 +412,9 @@ const Upcoming = () => {
       
   )
 }
+
+Upcoming.propTypes = {
+  isSidebarOpen: PropTypes.bool.isRequired
+};
 
 export default Upcoming

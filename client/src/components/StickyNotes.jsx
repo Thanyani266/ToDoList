@@ -3,13 +3,14 @@ import { useContext, useEffect, useState } from "react";
 import axios from 'axios'
 import ModalOne from "./ModalOne";
 import Modal from "./Modal";
+import PropTypes from 'prop-types';
 import { useNavigate, useParams } from "react-router";
 import { UserContext } from "../context/UserContext";
 import { TrimTitle } from "./TrimTitle";
 import { TrimDesc } from "./TrimDesc";
 
 
-const StickyNotes = () => {
+const StickyNotes = ({ isSidebarOpen }) => {
     const [data, setData] = useState([]);
     const user = useContext(UserContext)
     const navigate = useNavigate();
@@ -143,7 +144,7 @@ const StickyNotes = () => {
       const notesData = data.filter(task => task.username === user.username);
     
   return (
-    <MDBCol md='8'>
+    <MDBCol className={`${isSidebarOpen ? 'col-md-8' : 'col'}`}>
         <MDBTypography tag='span' className="fw-bold display-6">
             Sticky Wall
         </MDBTypography>
@@ -204,5 +205,9 @@ const StickyNotes = () => {
     </MDBCol>
   )
 }
+
+StickyNotes.propTypes = {
+  isSidebarOpen: PropTypes.bool.isRequired
+};
 
 export default StickyNotes

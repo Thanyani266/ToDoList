@@ -4,13 +4,14 @@ import { useContext, useEffect, useState } from "react"
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import './Calendar.css'
+import PropTypes from 'prop-types'
 import { useNavigate, useParams } from "react-router"
 import Modal from "./Modal"
 import ModalOne from "./ModalOne"
 import { UserContext } from "../context/UserContext"
 import Badge from "./Badge"
 
-const Calendar1 = () => {
+const Calendar1 = ({ isSidebarOpen }) => {
   const user = useContext(UserContext);
   const [tasks, setTasks] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -174,7 +175,7 @@ const Calendar1 = () => {
   };*/
 
   return (
-    <MDBCol md='8'>
+    <MDBCol className={`${isSidebarOpen ? 'col-md-8' : 'col'}`}>
         <MDBContainer>
           <MDBTypography tag='div'>
             <h1>Task Calendar</h1>
@@ -237,5 +238,9 @@ const Calendar1 = () => {
       </MDBCol>
   )
 }
+
+Calendar1.propTypes = {
+  isSidebarOpen: PropTypes.bool.isRequired
+};
 
 export default Calendar1

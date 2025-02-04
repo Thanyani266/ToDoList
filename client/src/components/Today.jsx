@@ -3,13 +3,14 @@ import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGr
 import { useContext, useEffect, useState } from "react";
 import Modal from './Modal';
 import '../App.css'
+import PropTypes from 'prop-types';
 import { useNavigate, useParams } from "react-router";
 import ModalOne from "./ModalOne";
 import { UserContext } from "../context/UserContext";
 import Badge from "./Badge";
 
 
-const Today = () => {
+const Today = ({ isSidebarOpen }) => {
   const navigate = useNavigate()
   const [data, setData] = useState([]);
   const user = useContext(UserContext)
@@ -186,7 +187,7 @@ const Today = () => {
   console.log(todayTasks);
   
   return (
-    <MDBCol md='8'>
+    <MDBCol className={`${isSidebarOpen ? 'col-md-8' : 'col'}`}>
     <MDBTypography tag='span' className="fw-bold display-6 py-5">
             Today <MDBTypography tag='span' className="float-end ms-auto border bg-secondary px-2 text-light rounded">{todayTasks.length}</MDBTypography>
         </MDBTypography>
@@ -248,5 +249,9 @@ const Today = () => {
     </MDBCol>
   )
 }
+
+Today.propTypes = {
+  isSidebarOpen: PropTypes.bool.isRequired
+};
 
 export default Today

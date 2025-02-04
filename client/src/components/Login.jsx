@@ -1,6 +1,6 @@
 import { MDBBtn, MDBCol, MDBContainer, MDBInput, MDBRow, MDBTypography } from 'mdb-react-ui-kit'
 import ogneb from '../assets/ogneb-1.png'
-import { Link, useNavigate } from "react-router"
+import { Link, useNavigate} from "react-router"
 import { useState } from 'react';
 import axios from 'axios';
 
@@ -10,14 +10,17 @@ const Login = () => {
     const [err, setErr] = useState('')
     const navigate = useNavigate()
 
+
     const handleSubmit = async (event) => {
         event.preventDefault()
         try{
             const response = await axios.post('http://localhost:5000/login', ({email, password}), {withCredentials: true});
             if(response){
+                
                 localStorage.setItem('login', JSON.stringify(response.data))
-                navigate('/tasks')
+                navigate('/tasks/today')
                 navigate(0)
+                
             }
         }catch(err){
             console.log('Error caught:', err); // Log the error
@@ -30,6 +33,7 @@ const Login = () => {
             console.log(err);
         }
     }
+
   return (
     <MDBContainer>
             <MDBRow className='mb-5 gap-2'>

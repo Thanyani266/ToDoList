@@ -7,8 +7,9 @@ import Modal from './Modal';
 import ModalOne from './ModalOne';
 import moment from 'moment';
 import Badge from './Badge';
+import PropTypes from 'prop-types';
 
-const Work = () => {
+const Work = ({ isSidebarOpen }) => {
     const navigate = useNavigate()
   const [data, setData] = useState([]);
   const user = useContext(UserContext)
@@ -189,7 +190,7 @@ const Work = () => {
     
 
     return (
-        <MDBCol md='8'>
+        <MDBCol className={`${isSidebarOpen ? 'col-md-8' : 'col'}`}>
         <MDBTypography tag='span' className="fw-bold display-6 py-5">
                 Work <MDBTypography tag='span' className="float-end ms-auto border bg-secondary px-2 text-light rounded">{workTasks.length}</MDBTypography>
             </MDBTypography>
@@ -249,5 +250,9 @@ const Work = () => {
         </MDBListGroup> 
         </MDBCol>
 )}
+
+Work.propTypes = {
+  isSidebarOpen: PropTypes.bool.isRequired
+};
 
 export default Work

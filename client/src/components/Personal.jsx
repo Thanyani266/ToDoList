@@ -6,8 +6,9 @@ import axios from 'axios';
 import Modal from './Modal';
 import ModalOne from './ModalOne';
 import Badge from './Badge';
+import PropTypes from 'prop-types';
 
-const Personal = () => {
+const Personal = ({ isSidebarOpen }) => {
     const navigate = useNavigate()
   const [data, setData] = useState([]);
   const user = useContext(UserContext)
@@ -187,7 +188,7 @@ const Personal = () => {
     
 
     return (
-        <MDBCol md='8'>
+        <MDBCol className={`${isSidebarOpen ? 'col-md-8' : 'col'}`}>
         <MDBTypography tag='span' className="fw-bold display-6 py-5">
                 Personal <MDBTypography tag='span' className="float-end ms-auto border bg-secondary px-2 text-light rounded">{personalTasks.length}</MDBTypography>
             </MDBTypography>
@@ -247,5 +248,9 @@ const Personal = () => {
         </MDBListGroup> 
         </MDBCol>
 )}
+
+Personal.propTypes = {
+  isSidebarOpen: PropTypes.bool.isRequired
+};
 
 export default Personal
