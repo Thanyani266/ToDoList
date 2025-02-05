@@ -1,16 +1,20 @@
+// Required packages
 const fsPromises = require('fs').promises
 const path = require('path')
 const { v4 : uuid } = require('uuid')
 
+// data table for tasks
 const data = {
     tasks: require('../models/tasks.json'),
     setTasks: function (data) { this.tasks = data}
 }
 
+// getting all tasks
 const getTasks = (req, res) => {
     res.json(data.tasks)
 }
 
+// getting tasks by category(list)
 const getTasksByList = async (req, res) => {
     const category = req.params.category;
     try {
@@ -21,6 +25,7 @@ const getTasksByList = async (req, res) => {
     }
 }
 
+// Adding a new task
 const createTask = async (req, res) => {
     const task = {
         title: req.body.title,
@@ -37,17 +42,16 @@ const createTask = async (req, res) => {
         JSON.stringify(data.tasks)
     );
     console.log(data.tasks)
-    res.status(201).json(data.tasks) // 201 ==> created new record
-    //const post = req.body
-    //posts.push()
-    //res.send("Post added successfully")
+    res.status(201).json(data.tasks) // 201 ==> created new task
 }
 
+// getting a single task
 const getTask = (req, res) => {
     const singleTask = data.tasks.filter(task => task.id === req.params.id)
     res.send(singleTask)
 }
 
+// deleting a task
 const deleteTask = async (req, res) => {
     tasks = data.tasks.filter(task => task.id !== req.params.id)
     data.setTasks([...tasks])
@@ -58,6 +62,7 @@ const deleteTask = async (req, res) => {
     res.send("Task deleted successfully")
 }
 
+// editting a task
 const updateTask = async (req, res) => {
     const task = data.tasks.find(task => task.id === req.params.id)
 
@@ -74,4 +79,5 @@ const updateTask = async (req, res) => {
     res.send("Task updated successfully")
 }
 
+// exporting fns 
 module.exports = { getTasks, createTask, getTask, deleteTask, updateTask, getTasksByList }

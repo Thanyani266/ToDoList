@@ -1,14 +1,17 @@
+// users database table
 const usersDB = {
     users: require('../models/users.json'),
     setUsers: function (data) { this.users = data }
 }
 
+// required packages
 const fsPromises = require('fs').promises
 const path = require('path')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
+// new user creating an account
 const handleNewUser = async (req, res) => {
     const { username, email, password } = req.body
     if (!username || !email || !password) return res.status(400).send("Input Field(s) Empty!")
@@ -33,6 +36,7 @@ const handleNewUser = async (req, res) => {
     }
 }
 
+// user logging in
 const handleLogin = async (req, res) => {
     const { email, password } = req.body
     if (!email || !password) return res.status(400).send("Email and Password Required!")
@@ -69,6 +73,7 @@ const handleLogin = async (req, res) => {
     }
 }
 
+// user logging out
 const handleLogout = async (req, res) => {
     // On client, also delete the accessToken
 
@@ -96,6 +101,7 @@ const handleLogout = async (req, res) => {
     res.sendStatus(204)
 }
 
+// setting refreshToken for logged in user
 const handleRefreshToken = (req, res) => {
     const cookies = req.cookies
     if (!cookies?.jwt) return res.sendStatus(401);
@@ -121,6 +127,7 @@ const handleRefreshToken = (req, res) => {
     );
 }
 
+// verifying the user's credentials
 const verifyUser = (req, res, next) => {
     const cookies = req.cookies
     if (!cookies?.jwt) return res.sendStatus(401);
@@ -140,29 +147,9 @@ const verifyUser = (req, res, next) => {
             next();
         }
     );
-    /*
-    jwt.verify(
-        refreshToken,
-        process.env.ACCESS_TOKEN_SECRET,
-        (err, decoded) => {
-            if(err) return res.sendStatus(403); // invalid token
-            req.email = decoded.email;
-            req.username = decoded.username;
-            next();
-        }
-    );
-    const token = authHeader.split(' ')[1];
-    jwt.verify(
-        token,
-        process.env.ACCESS_TOKEN_SECRET,
-        (err, decoded) => {
-            if(err) return res.sendStatus(403); // invalid token
-            req.user = decoded.username;
-            next();
-        }
-    ); */
 }
 
+// user's details for the context
 const userInfo = (req, res) => { 
     const cookies = req.cookies
     if (!cookies?.jwt) return res.json({"message": "No cookies"});
@@ -175,4 +162,5 @@ const userInfo = (req, res) => {
     res.json(foundUser)
 }
 
+// export fns
 module.exports = { handleNewUser, handleLogin, userInfo, handleRefreshToken, handleLogout, verifyUser }
