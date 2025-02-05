@@ -15,6 +15,14 @@ const Calendar1 = ({ isSidebarOpen }) => {
   const user = useContext(UserContext);
   const [tasks, setTasks] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [checkedItems] = useState(() => {
+    const saved = localStorage.getItem("checkedItems");
+    return saved ? JSON.parse(saved) : {};
+  });
+
+  useEffect(() => {
+    localStorage.setItem("checkedItems", JSON.stringify(checkedItems));
+  }, [checkedItems]);
 
   const convertTasksToDateObjects = tData => {
     const tasksData = tData.filter(task => task.username === user.username)
@@ -185,7 +193,7 @@ const Calendar1 = ({ isSidebarOpen }) => {
           <h2>Tasks for {selectedDate.toDateString()}</h2>
           <ul>
             {getTasksForSelectedDate().map(task => (
-                <MDBListGroupItem key={task.id} className={`d-flex justify-content-between align-items-start border border-2 rounded mt-2 p-3`}>
+                <MDBListGroupItem key={task.id} className={`${checkedItems[task.id] ? 'd-none' : ''} d-flex justify-content-between align-items-start border border-2 rounded mt-2 p-3`}>
                   <div className='ms-2 me-auto'>
                     <div className='text-capitalize fw-bold'>
                     {task.title}</div><Badge>{task.category}</Badge>

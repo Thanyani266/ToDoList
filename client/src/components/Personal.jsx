@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router';
 import { UserContext } from '../context/UserContext';
 import axios from 'axios';
 import Modal from './Modal';
+import moment from 'moment';
 import ModalOne from './ModalOne';
 import Badge from './Badge';
 import PropTypes from 'prop-types';
@@ -204,10 +205,14 @@ const Personal = ({ isSidebarOpen }) => {
                     label={item.title}
                     checked={!!checkedItems[item.id]}
                     onChange={() => handleCheckboxChange(item.id)}
-                /></div><Badge>{item.category}</Badge>
+                /></div>
+                <div className={`d-flex`}>
+                  <Badge>{item.category}</Badge>
+                  <span className={`${checkedItems[item.id] ? 'text-decoration-line-through' : ''} fst-italic text-warning fw-bold ms-5`}>{moment(item.date).calendar().substring(0, moment(item.date).calendar().length-12)}</span>
+                </div>
             </div>
-            <MDBBtn onClick={() => startEditing(item)} className="me-1 rounded-pill btn-outline-info"><MDBIcon fas icon='edit' size="lg" /></MDBBtn>
-            <MDBBtn onClick={() => getSingleTask(item.id)} className="me-1 rounded-pill btn-outline-secondary"><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
+            <MDBBtn onClick={() => startEditing(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-info`}><MDBIcon fas icon='edit' size="lg" /></MDBBtn>
+            <MDBBtn onClick={() => getSingleTask(item.id)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-secondary`}><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
             <MDBBtn onClick={() => deleteTask(item.id)} className="me-1 rounded-pill btn-outline-danger">
               <MDBIcon fas icon='trash' size='lg'/>
             </MDBBtn>

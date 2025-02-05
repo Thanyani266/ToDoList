@@ -205,11 +205,14 @@ const Work = ({ isSidebarOpen }) => {
                     label={item.title}
                     checked={!!checkedItems[item.id]}
                     onChange={() => handleCheckboxChange(item.id)}
-                /></div><Badge>{item.category}</Badge>
-                <span className='ms-5 text-muted'>{moment(item.date).calendar().substring(0, moment(item.date).calendar().length-12)}</span>
+                /></div>
+                <div className={`d-flex`}>
+                  <Badge>{item.category}</Badge>
+                  <span className={`${checkedItems[item.id] ? 'text-decoration-line-through' : ''} fst-italic text-warning fw-bold ms-5`}>{moment(item.date).calendar().substring(0, moment(item.date).calendar().length-12)}</span>
+                </div>
             </div>
-            <MDBBtn onClick={() => startEditing(item)} className="me-1 rounded-pill bg-transparent border border-info"><MDBIcon fas icon='edit' color="info" size="lg" /></MDBBtn>
-        <MDBBtn onClick={() => getSingleTask(item.id)} className="me-1 rounded-pill bg-transparent border border-secondary"><MDBIcon fas icon="eye" color="secondary" size="lg" /></MDBBtn>
+            <MDBBtn onClick={() => startEditing(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill bg-transparent border border-info`}><MDBIcon fas icon='edit' color="info" size="lg" /></MDBBtn>
+        <MDBBtn onClick={() => getSingleTask(item.id)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill bg-transparent border border-secondary`}><MDBIcon fas icon="eye" color="secondary" size="lg" /></MDBBtn>
         <MDBBtn onClick={() => deleteTask(item.id)} className="me-1 rounded-pill bg-transparent border border-danger">
           <MDBIcon fas icon='trash' color='danger' size='lg'/>
         </MDBBtn>

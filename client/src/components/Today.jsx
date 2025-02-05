@@ -206,8 +206,8 @@ const Today = ({ isSidebarOpen }) => {
                 onChange={() => handleCheckboxChange(item.id)}
             /></div><Badge>{item.category}</Badge>
         </div>
-        <MDBBtn onClick={() => startEditing(item)} className="me-1 rounded-pill btn-outline-info"><MDBIcon fas icon='edit' size="lg" /></MDBBtn>
-        <MDBBtn onClick={() => getSingleTask(item.id)} className="me-1 rounded-pill btn-outline-secondary"><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
+        <MDBBtn onClick={() => startEditing(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-info`}><MDBIcon fas icon='edit' size="lg" /></MDBBtn>
+        <MDBBtn onClick={() => getSingleTask(item.id)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-secondary`}><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
         <MDBBtn onClick={() => deleteTask(item.id)} className="me-1 rounded-pill btn-outline-danger">
           <MDBIcon fas icon='trash' size='lg'/>
         </MDBBtn></> : null}
