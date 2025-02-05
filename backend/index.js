@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 // Allow request from any IP
 app.use(cors({
     credentials: true,
-    origin: 'http://localhost:5173'
+    origin: 'https://soft-lebkuchen-9ce655.netlify.app/'
 }));
 app.use(cookieParser());
 
