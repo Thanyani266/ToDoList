@@ -14,7 +14,6 @@ const port = 5000;
 app.use(bodyParser.json());
 // Allow request from any IP
 app.use(cors({
-    credentials: true,
     origin: 'https://to-do-list-client.netlify.app'
 }));
 app.use(cookieParser());
