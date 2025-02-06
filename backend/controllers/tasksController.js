@@ -38,7 +38,7 @@ const createTask = async (req, res) => {
     const newTask = {...task, id: uuid()};
     data.setTasks([...data.tasks, newTask])
     await fsPromises.writeFile(
-        path.join(__dirname, '..', 'models', 'tasks.json'),
+        path.join(__dirname, '..', 'public', 'tasks.json'),
         JSON.stringify(data.tasks)
     );
     console.log(data.tasks)
