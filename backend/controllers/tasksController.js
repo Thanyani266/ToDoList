@@ -5,7 +5,7 @@ const { v4 : uuid } = require('uuid')
 
 // data table for tasks
 const data = {
-    tasks: require('../models/tasks.json'),
+    tasks: require('../public/tasks.json'),
     setTasks: function (data) { this.tasks = data}
 }
 
