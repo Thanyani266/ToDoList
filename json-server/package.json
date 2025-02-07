@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "json-server --watch db.json --port 3000"
+    "start": "json-server --watch db.json --port 3000",
+    "build": "mkdir -p /opt/render/project/src/json-server/public && cp ./public/* /opt/render/project/src/json-server/public/"
   },
   "keywords": [],
   "author": "",
