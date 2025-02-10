@@ -20,7 +20,7 @@ const StickyNotes = ({ isSidebarOpen }) => {
     }, [])
 
     const getNotes = async () => {
-      const response = await axios.get('http://localhost:5000/notes')
+      const response = await axios.get('https://to-do-list-mu-green.vercel.app/notes')
       if (response.status === 200) {
         setData(response.data)
       }
@@ -38,7 +38,7 @@ const StickyNotes = ({ isSidebarOpen }) => {
 
   const deleteNote = async (id) => {
     if(window.confirm("Are you sure you want to delete the note?")){
-      const response = await axios.delete(`http://localhost:5000/note/${id}`)
+      const response = await axios.delete(`https://to-do-list-mu-green.vercel.app/note/${id}`)
       if (response.status === 200) {
         getNotes();
         navigate(0);
@@ -54,7 +54,7 @@ const StickyNotes = ({ isSidebarOpen }) => {
   }, [id])
 
   const getSingleNote = async (id) => {
-    const response = await axios.get(`http://localhost:5000/note/${id}`)
+    const response = await axios.get(`https://to-do-list-mu-green.vercel.app/note/${id}`)
     if (response.status === 200) {
         setNote({...response.data[0]});
         setShowModalOne(true);
@@ -67,7 +67,7 @@ const StickyNotes = ({ isSidebarOpen }) => {
             ...dat,
             username: user ? user.username : null // Add username to task object
           };
-          const response = await axios.post('http://localhost:5000/note', noteData);
+          const response = await axios.post('https://to-do-list-mu-green.vercel.app/note', noteData);
           if (response.status === 200) {
             console.log('Note added successfully:', response.data);
             // Optionally reset form fields here
@@ -83,7 +83,7 @@ const StickyNotes = ({ isSidebarOpen }) => {
 
     const updateNote = async (noteId, updatedData) => {
         try {
-          const response = await axios.put(`http://localhost:5000/note/${noteId}`, updatedData);
+          const response = await axios.put(`https://to-do-list-mu-green.vercel.app/note/${noteId}`, updatedData);
           if (response.status === 200) {
             console.log('Note updated successfully:', response.data);
             // Update the tasks list

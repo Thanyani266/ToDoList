@@ -34,7 +34,7 @@ const Calendar1 = ({ isSidebarOpen }) => {
 
   const getTasks = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/tasks');
+      const response = await axios.get('https://to-do-list-mu-green.vercel.app/tasks');
       if (response.status === 200) {
         const convertedTasks = convertTasksToDateObjects(response.data);
         setTasks(convertedTasks);
@@ -56,7 +56,7 @@ const Calendar1 = ({ isSidebarOpen }) => {
   }, [])
 
   const getLists = async () => {
-    const response = await axios.get('http://localhost:5000/lists')
+    const response = await axios.get('https://to-do-list-mu-green.vercel.app/lists')
     if (response.status === 200) {
       setList(response.data)
     }
@@ -110,7 +110,7 @@ const Calendar1 = ({ isSidebarOpen }) => {
 
   const getSingleTask = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:5000/task/${id}`);
+      const response = await axios.get(`https://to-do-list-mu-green.vercel.app/task/${id}`);
       if (response.status === 200) {
         setTask({...response.data[0]});
         setShowModalOne(true);
@@ -130,7 +130,7 @@ const Calendar1 = ({ isSidebarOpen }) => {
 
   const updateTask = async (taskId, updatedData) => {
     try {
-      const response = await axios.put(`http://localhost:5000/task/${taskId}`, updatedData);
+      const response = await axios.put(`https://to-do-list-mu-green.vercel.app/task/${taskId}`, updatedData);
       if (response.status === 200) {
         setTasks(tasks.map(task => (task.id === taskId ? response.data : task)));
         setTitle('');
@@ -148,7 +148,7 @@ const Calendar1 = ({ isSidebarOpen }) => {
   const deleteTask = async (id) => {
     if (window.confirm("Are you sure you want to delete the task?")) {
       try {
-        const response = await axios.delete(`http://localhost:5000/task/${id}`);
+        const response = await axios.delete(`https://to-do-list-mu-green.vercel.app/task/${id}`);
         if (response.status === 200) {
           getTasks();
         }

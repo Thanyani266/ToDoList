@@ -32,7 +32,7 @@ const Personal = ({ isSidebarOpen }) => {
         ...dat,
         username: user ? user.username : null // Add username to task object
       };
-      const response = await axios.post('http://localhost:5000/task', taskData);
+      const response = await axios.post('https://to-do-list-mu-green.vercel.app/task', taskData);
       if (response.status === 200) {
         console.log('Task added successfully:', response.data);
         // Optionally reset form fields here
@@ -50,7 +50,7 @@ const Personal = ({ isSidebarOpen }) => {
 
   const updateTask = async (taskId, updatedData) => {
     try {
-      const response = await axios.put(`http://localhost:5000/task/${taskId}`, updatedData);
+      const response = await axios.put(`https://to-do-list-mu-green.vercel.app/task/${taskId}`, updatedData);
       if (response.status === 200) {
         console.log('Task updated successfully:', response.data);
         // Update the tasks list
@@ -78,7 +78,7 @@ const Personal = ({ isSidebarOpen }) => {
   }, [checkedItems]);
 
   const getTasks = async () => {
-    const response = await axios.get('http://localhost:5000/tasks')
+    const response = await axios.get('https://to-do-list-mu-green.vercel.app/tasks')
     if (response.status === 200) {
       setData(response.data)
     }
@@ -91,7 +91,7 @@ const Personal = ({ isSidebarOpen }) => {
   }, [])
 
   const getLists = async () => {
-    const response = await axios.get('http://localhost:5000/lists')
+    const response = await axios.get('https://to-do-list-mu-green.vercel.app/lists')
     if (response.status === 200) {
       setList(response.data)
     }
@@ -99,7 +99,7 @@ const Personal = ({ isSidebarOpen }) => {
 
   const deleteTask = async (id) => {
     if(window.confirm("Are you sure you want to delete the task?")){
-      const response = await axios.delete(`http://localhost:5000/task/${id}`)
+      const response = await axios.delete(`https://to-do-list-mu-green.vercel.app/task/${id}`)
       if (response.status === 200) {
         getTasks();
       }
@@ -119,7 +119,7 @@ const Personal = ({ isSidebarOpen }) => {
   const [showModalOne, setShowModalOne] = useState(false);
 
   const getSingleTask = async (id) => {
-    const response = await axios.get(`http://localhost:5000/task/${id}`)
+    const response = await axios.get(`https://to-do-list-mu-green.vercel.app/task/${id}`)
     if (response.status === 200) {
         setTask({...response.data[0]});
         setShowModalOne(true);

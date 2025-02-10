@@ -23,7 +23,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   }, [])
 
   const getTasks = async () => {
-    const response = await axios.get('http://localhost:5000/tasks')
+    const response = await axios.get('https://to-do-list-mu-green.vercel.app/tasks')
     if (response.status === 200) {
       setTData(response.data)
     }
@@ -47,7 +47,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
     }
   }, [location])
   const handleLogout = () => {
-    axios.get('http://localhost:5000/logout')
+    axios.get('https://to-do-list-mu-green.vercel.app/logout')
     .then(res => {
       if(res){
         window.location.href = '/'

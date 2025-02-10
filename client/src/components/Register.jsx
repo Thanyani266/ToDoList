@@ -15,7 +15,7 @@ const Register = () => {
     const handleSubmit = async (event) => {
         event.preventDefault()
         try{
-            const res = await axios.post('http://localhost:5000/register', {username, email, password});
+            const res = await axios.post('https://to-do-list-mu-green.vercel.app/register', {username, email, password});
             console.log('Response received:', res); // Log the response
             if(res.status === 201){
                 navigate('/login')

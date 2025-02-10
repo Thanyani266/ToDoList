@@ -11,7 +11,7 @@ const UserProvider = ({ children }) => {
     axios.defaults.withCredentials = true;
 
     useEffect(() => {
-    axios.get('http://localhost:5000/user', {withCredentials: true})
+    axios.get('https://to-do-list-mu-green.vercel.app/user', {withCredentials: true})
     .then(res => {
       setUser(res.data)
     }).catch(err => console.log(err))
