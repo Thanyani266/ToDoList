@@ -18,6 +18,13 @@ app.use(cors({
     credentials: true, // This ensures that the `Access-Control-Allow-Credentials` header is set to `true`
     optionsSuccessStatus: 200
 }));
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'https://to-do-list-client.netlify.app');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
+  
 app.use(cookieParser());
 
 // built-in middleware to handle json data 
