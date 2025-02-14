@@ -21,7 +21,7 @@ const App = () => {
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
-        <Route path="tasks/" element={<TaskHome />} >
+        <Route path="tasks/*" element={<TaskHome />} >
           <Route index element={<Today />} /> {/* Default route for /tasks */}
           <Route path="today" element={<Today />} />
           <Route path="upcoming" element={<Upcoming />} />

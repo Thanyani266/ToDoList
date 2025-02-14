@@ -1,16 +1,16 @@
 import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGroup, MDBListGroupItem, MDBTextArea, MDBTypography } from 'mdb-react-ui-kit';
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useOutletContext, useParams } from 'react-router';
 import { UserContext } from '../context/UserContext';
 import axios from 'axios';
 import Modal from './Modal';
 import ModalOne from './ModalOne';
 import moment from 'moment';
 import Badge from './Badge';
-import PropTypes from 'prop-types';
 
-const Work = ({ isSidebarOpen }) => {
-    const navigate = useNavigate()
+const Work = () => {
+  const { isSidebarOpen } = useOutletContext();
+  const navigate = useNavigate()
   const [data, setData] = useState([]);
   const user = useContext(UserContext)
   const [checkedItems, setCheckedItems] = useState(() => {
@@ -253,9 +253,5 @@ const Work = ({ isSidebarOpen }) => {
         </MDBListGroup> 
         </MDBCol>
 )}
-
-Work.propTypes = {
-  isSidebarOpen: PropTypes.bool.isRequired
-};
 
 export default Work

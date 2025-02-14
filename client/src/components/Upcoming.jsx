@@ -2,13 +2,13 @@ import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGr
 import { useContext, useEffect, useState } from "react";
 import ModalOne from "./ModalOne";
 import Modal from "./Modal";
-import PropTypes from 'prop-types';
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useOutletContext, useParams } from "react-router";
 import axios from "axios";
 import { UserContext } from "../context/UserContext";
 import Badge from "./Badge";
 
-const Upcoming = ({ isSidebarOpen }) => {
+const Upcoming = () => {
+  const { isSidebarOpen } = useOutletContext();
   const navigate = useNavigate()
   const [data, setData] = useState([]);
   const user = useContext(UserContext)
@@ -412,9 +412,5 @@ const Upcoming = ({ isSidebarOpen }) => {
       
   )
 }
-
-Upcoming.propTypes = {
-  isSidebarOpen: PropTypes.bool.isRequired
-};
 
 export default Upcoming

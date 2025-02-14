@@ -4,14 +4,14 @@ import { useContext, useEffect, useState } from "react"
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import './Calendar.css'
-import PropTypes from 'prop-types'
-import { useNavigate, useParams } from "react-router"
+import { useNavigate, useOutletContext, useParams } from "react-router"
 import Modal from "./Modal"
 import ModalOne from "./ModalOne"
 import { UserContext } from "../context/UserContext"
 import Badge from "./Badge"
 
-const Calendar1 = ({ isSidebarOpen }) => {
+const Calendar1 = () => {
+  const { isSidebarOpen } = useOutletContext();
   const user = useContext(UserContext);
   const [tasks, setTasks] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -246,9 +246,5 @@ const Calendar1 = ({ isSidebarOpen }) => {
       </MDBCol>
   )
 }
-
-Calendar1.propTypes = {
-  isSidebarOpen: PropTypes.bool.isRequired
-};
 
 export default Calendar1

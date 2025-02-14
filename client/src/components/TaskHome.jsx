@@ -16,7 +16,9 @@ const TaskHome = () => {
     <MDBContainer>
       <MDBRow className="py-1">
         <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-        <Outlet isSidebarOpen={isSidebarOpen}/>
+        <div className={`${isSidebarOpen ? 'content-shifted' : 'content'}`}>
+        <Outlet context={{ isSidebarOpen }} />
+        </div>
       </MDBRow>
     </MDBContainer>
   )
