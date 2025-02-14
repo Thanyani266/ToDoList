@@ -14,7 +14,7 @@ const port = 5000;
 app.use(bodyParser.json());
 // Allow request from any IP
 app.use(cors({
-    origin: 'https://to-do-list-client.netlify.app',
+    origin: 'https://to-do-list-95u3.vercel.app',
     credentials: true, // This ensures that the `Access-Control-Allow-Credentials` header is set to `true`
     optionsSuccessStatus: 200
 }));
