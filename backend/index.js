@@ -20,7 +20,7 @@ app.use(cors({
 }));
 
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://to-do-list-client.netlify.app');
+    res.header('Access-Control-Allow-Origin', 'https://to-do-list-95u3.vercel.app');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
 });
