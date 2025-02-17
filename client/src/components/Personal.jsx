@@ -1,6 +1,6 @@
 import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGroup, MDBListGroupItem, MDBTextArea, MDBTypography } from 'mdb-react-ui-kit';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import axios from 'axios';
 import Modal from './Modal';
 import PropTypes from 'prop-types';
@@ -9,7 +9,6 @@ import ModalOne from './ModalOne';
 import Badge from './Badge';
 
 const Personal = ({isSidebarOpen}) => {
-  const navigate = useNavigate()
   const [data, setData] = useState([]);
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
@@ -95,7 +94,7 @@ const Personal = ({isSidebarOpen}) => {
       const response = await axios.delete(`https://to-do-list-mu-green.vercel.app/task/${id}`)
       if (response.status === 200) {
         getTasks();
-        navigate(0)
+        window.location.reload()
       }
     }
   }
@@ -149,10 +148,10 @@ const Personal = ({isSidebarOpen}) => {
       const taskData = { title, description, category, date };
       if (editingTask) {
         updateTask(editingTask.id, taskData);
-        navigate(0)
+        window.location.reload()
       } else {
         addTask(taskData);
-        navigate(0)
+        window.location.reload()
       }
     };
     
