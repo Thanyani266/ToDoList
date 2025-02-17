@@ -95,6 +95,7 @@ const Personal = ({isSidebarOpen}) => {
       const response = await axios.delete(`https://to-do-list-mu-green.vercel.app/task/${id}`)
       if (response.status === 200) {
         getTasks();
+        navigate(0)
       }
     }
   }
