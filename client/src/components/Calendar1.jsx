@@ -1,18 +1,15 @@
 import axios from "axios"
 import { MDBBtn, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGroupItem, MDBTextArea, MDBTypography } from "mdb-react-ui-kit"
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import './Calendar.css'
-import { useNavigate, useOutletContext, useParams } from "react-router"
+import { useParams } from "react-router"
 import Modal from "./Modal"
 import ModalOne from "./ModalOne"
-import { UserContext } from "../context/UserContext"
 import Badge from "./Badge"
 
 const Calendar1 = () => {
-  const { isSidebarOpen } = useOutletContext();
-  const user = useContext(UserContext);
   const [tasks, setTasks] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [checkedItems] = useState(() => {
@@ -25,8 +22,7 @@ const Calendar1 = () => {
   }, [checkedItems]);
 
   const convertTasksToDateObjects = tData => {
-    const tasksData = tData.filter(task => task.username === user.username)
-    return tasksData.map(task => ({
+    return tData.map(task => ({
       ...task,
       date: new Date(task.date)
     }))
@@ -91,7 +87,6 @@ const Calendar1 = () => {
   };
 
   const {id} = useParams();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if(id) {
@@ -163,7 +158,6 @@ const Calendar1 = () => {
     const taskData = { title, description, category, date };
     if (editingTask) {
       updateTask(editingTask.id, taskData);
-      navigate(0)
     }
   };
 
@@ -183,7 +177,7 @@ const Calendar1 = () => {
   };*/
 
   return (
-    <MDBCol className={`${isSidebarOpen ? 'col-md-8' : 'col'}`}>
+    <MDBCol className={`col-md-8`}>
         <MDBContainer>
           <MDBTypography tag='div'>
             <h1>Task Calendar</h1>

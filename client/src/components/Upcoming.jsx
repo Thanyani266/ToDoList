@@ -1,17 +1,14 @@
 import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGroup, MDBListGroupItem, MDBRow, MDBTextArea, MDBTypography } from "mdb-react-ui-kit"
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ModalOne from "./ModalOne";
 import Modal from "./Modal";
-import { useNavigate, useOutletContext, useParams } from "react-router";
+import { useParams } from "react-router";
 import axios from "axios";
-import { UserContext } from "../context/UserContext";
 import Badge from "./Badge";
 
 const Upcoming = () => {
-  const { isSidebarOpen } = useOutletContext();
-  const navigate = useNavigate()
+  
   const [data, setData] = useState([]);
-  const user = useContext(UserContext)
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
     return saved ? JSON.parse(saved) : {};
@@ -25,12 +22,8 @@ const Upcoming = () => {
   const [category, setCategory] = useState('')
   const [date, setDate] = useState('')
 
-  const addTask = async (dat) => {
+  const addTask = async (taskData) => {
     try {
-      const taskData = {
-        ...dat,
-        username: user ? user.username : null // Add username to task object
-      };
       const response = await axios.post('https://to-do-list-mu-green.vercel.app/task', taskData);
       if (response.status === 200) {
         console.log('Task added successfully:', response.data);
@@ -153,10 +146,8 @@ const Upcoming = () => {
       const taskData = { title, description, category, date };
       if (editingTask) {
         updateTask(editingTask.id, taskData);
-        navigate(0)
       } else {
         addTask(taskData);
-        navigate(0)
       }
     };
     
@@ -216,18 +207,15 @@ const Upcoming = () => {
               dateToCompare.getFullYear() === nextSunday.getFullYear());
     };
   
-    const todyTasks = data.filter(task => isToday(task.date));
-  const todayTasks = todyTasks.filter(task => task.username === user.username);
-  const tomorroTasks = data.filter(task => isTomorrow(task.date));
-  const tomorrowTasks = tomorroTasks.filter(task => task.username === user.username);
-  const weekndTasks = data.filter(task => isNextWeekend(task.date));
-  const weekendTasks = weekndTasks.filter(task => task.username === user.username);
+  const todayTasks = data.filter(task => isToday(task.date));
+  const tomorrowTasks = data.filter(task => isTomorrow(task.date));
+  const weekendTasks = data.filter(task => isNextWeekend(task.date));
 
   console.log('data => ', data);
   console.log(todayTasks);
 
   return (
-    <MDBCol className={`${isSidebarOpen ? 'col-md-8' : 'col'}`}>
+    <MDBCol className={`col-md-8`}>
     <MDBTypography tag='span' className="fw-bold display-6 py-5">
             Upcoming <MDBTypography tag='span' className="float-end ms-auto border bg-secondary px-2 text-light rounded">{todayTasks.length + tomorrowTasks.length + weekendTasks.length}</MDBTypography>
         </MDBTypography>
@@ -236,7 +224,6 @@ const Upcoming = () => {
     <MDBListGroup light style={{ minWidth: '22rem' }}>
       {todayTasks && todayTasks.map(item => (
       <MDBListGroupItem className={`d-flex justify-content-between align-items-start border border-2 rounded mt-2 ${checkedItems[item.id] ? 'text-light bg-secondary bg-opacity-25' : ''}`} key={item.id}>
-        {(user.username === item.username) ? 
         <>
         <div className='ms-2 me-auto'>
           <div className='text-capitalize fw-bold'>
@@ -252,7 +239,7 @@ const Upcoming = () => {
         <MDBBtn onClick={() => deleteTask(item.id)} className="me-1 rounded-pill btn-outline-danger">
           <MDBIcon fas icon='trash' size='lg'/>
         </MDBBtn>
-        </> : ''}
+        </>
       </MDBListGroupItem>
       ))}
       <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
@@ -295,7 +282,6 @@ const Upcoming = () => {
     <MDBListGroup light style={{ minWidth: '22rem' }}>
       {tomorrowTasks && tomorrowTasks.map(item => (
       <MDBListGroupItem className={`d-flex justify-content-between align-items-start border border-2 rounded mt-2 ${checkedItems[item.id] ? 'text-light bg-secondary bg-opacity-25' : ''}`} key={item.id}>
-        {(user.username === item.username) ?
         <>
         <div className='ms-2 me-auto'>
           <div className='text-capitalize fw-bold'>
@@ -311,7 +297,7 @@ const Upcoming = () => {
         <MDBBtn onClick={() => deleteTask(item.id)} className="me-1 rounded-pill btn-outline-danger">
           <MDBIcon fas icon='trash' size='lg'/>
         </MDBBtn>
-        </> : '' }
+        </>
       </MDBListGroupItem>
       ))}
       <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
@@ -354,7 +340,6 @@ const Upcoming = () => {
     <MDBListGroup light style={{ minWidth: '22rem' }}>
       {weekendTasks && weekendTasks.map(item => (
       <MDBListGroupItem className={`d-flex justify-content-between align-items-start border border-2 rounded mt-2 ${checkedItems[item.id] ? 'text-light bg-secondary bg-opacity-25' : ''}`} key={item.id}>
-        {(user.username === item.username) ? 
         <>
         <div className='ms-2 me-auto'>
           <div className='text-capitalize fw-bold'>
@@ -370,7 +355,7 @@ const Upcoming = () => {
         <MDBBtn onClick={() => deleteTask(item.id)} className="me-1 rounded-pill btn-outline-danger">
           <MDBIcon fas icon='trash' size='lg'/>
         </MDBBtn>
-        </> : ''}
+        </> 
       </MDBListGroupItem>
       ))}
       <ModalOne show={showModalOne} onClose={handleCloseModalOne}>

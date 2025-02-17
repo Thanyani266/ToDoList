@@ -1,20 +1,16 @@
 import { MDBBtn, MDBCol, MDBContainer, MDBIcon, MDBListGroup, MDBListGroupItem, MDBNavbar, MDBRow, MDBTypography } from "mdb-react-ui-kit"
-import { Link, useLocation } from "react-router"
+import { Link } from "react-router"
 //import { useContext } from "react"
 //import { userContext } from "../context/authContext"
+import { useLocation } from "react-router-dom"
 import axios from "axios"
-import PropTypes from 'prop-types';
-import { useContext, useEffect, useState } from "react"
-import {UserContext} from '../context/UserContext'
+import { useEffect, useState } from "react"
 import '../App.css'
 
 
-const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
+const Sidebar = () => {
   const [activeTab, setActiveTab] = useState("Today");
   const [tData, setTData] = useState([]);
-
-  const user = useContext(UserContext)
-  console.log(user)
   
   const location = useLocation()
 
@@ -102,12 +98,9 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             dateToCompare.getFullYear() === nextSunday.getFullYear());
   };
 
-  const todyTasks = tData.filter(task => isToday(task.date));
-  const todayTasks = todyTasks.filter(task => task.username === user.username);
-  const tomorroTasks = tData.filter(task => isTomorrow(task.date));
-  const tomorrowTasks = tomorroTasks.filter(task => task.username === user.username);
-  const weekndTasks = tData.filter(task => isNextWeekend(task.date));
-  const weekendTasks = weekndTasks.filter(task => task.username === user.username);
+  const todayTasks = tData.filter(task => isToday(task.date));
+  const tomorrowTasks = tData.filter(task => isTomorrow(task.date));
+  const weekendTasks = tData.filter(task => isNextWeekend(task.date));
 
   const personalData = tData.filter(task => {
     const taskDate = new Date(task.date);
@@ -119,8 +112,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
     return taskDate >= today;
 });
 
-const personTasks = personalData.filter(task => task.category === 'Personal');
-const personalTasks = personTasks.filter(task => task.username === user.username);
+const personalTasks = personalData.filter(task => task.category === 'Personal');
 
 const workData = tData.filter(task => {
   const taskDate = new Date(task.date);
@@ -132,26 +124,25 @@ const workData = tData.filter(task => {
   return taskDate >= today;
 });
 
-const wokTasks = workData.filter(task => task.category === 'Work');
-const workTasks = wokTasks.filter(task => task.username === user.username);
+const workTasks = workData.filter(task => task.category === 'Work');
 
   return (
     <>
-    <header className={`${isSidebarOpen ? 'd-none' : 'd-block'}`}>
+    <header> 
       <MDBNavbar expand='lg' light bgColor='white' fixed>
         <MDBContainer fluid>
-          <MDBBtn className={`${isSidebarOpen ? 'd-none' : 'd-block'} btn-outline-warning`} onClick={toggleSidebar}>
+          <MDBBtn className={`btn-outline-warning`}>
             <MDBIcon fas icon='bars' size="lg" />
           </MDBBtn>
         </MDBContainer>
       </MDBNavbar>
     </header>
-    <MDBCol md='3' className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
+    <MDBCol md='3' className={`sidebar`}>
         <MDBContainer className="border border-2 border-warning rounded shadow">
           <MDBRow className="d-flex border-bottom">
             
           <MDBTypography tag='span' className="fw-bold p-2">
-            Welcome, {user && <span className="text-muted">{user.username}</span>}<MDBIcon fas icon="times" className="float-end ms-auto display-6 border border-2 rounded" style={{cursor: 'pointer'}} onClick={toggleSidebar}/>
+            Welcome, User<MDBIcon fas icon="times" className="float-end ms-auto display-6 border border-2 rounded" style={{cursor: 'pointer'}} />
           </MDBTypography>
           </MDBRow>
           <MDBTypography tag='p' className="fs6 mt-2 text-uppercase fw-bold">
@@ -182,10 +173,3 @@ const workTasks = wokTasks.filter(task => task.username === user.username);
 }
 
 export default Sidebar
-
-
-Sidebar.propTypes = {
-  onCategoryClick: PropTypes.func,
-  isSidebarOpen: PropTypes.bool.isRequired,
-  toggleSidebar: PropTypes.func.isRequired,
-};

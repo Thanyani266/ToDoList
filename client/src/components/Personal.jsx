@@ -1,7 +1,6 @@
 import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGroup, MDBListGroupItem, MDBTextArea, MDBTypography } from 'mdb-react-ui-kit';
-import { useContext, useEffect, useState } from 'react';
-import { useNavigate, useOutletContext, useParams } from 'react-router';
-import { UserContext } from '../context/UserContext';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 import axios from 'axios';
 import Modal from './Modal';
 import moment from 'moment';
@@ -9,10 +8,7 @@ import ModalOne from './ModalOne';
 import Badge from './Badge';
 
 const Personal = () => {
-  const { isSidebarOpen } = useOutletContext();
-  const navigate = useNavigate()
   const [data, setData] = useState([]);
-  const user = useContext(UserContext)
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
     return saved ? JSON.parse(saved) : {};
@@ -26,12 +22,8 @@ const Personal = () => {
   const [category, setCategory] = useState('')
   const [date, setDate] = useState('')
 
-  const addTask = async (dat) => {
+  const addTask = async (taskData) => {
     try {
-      const taskData = {
-        ...dat,
-        username: user ? user.username : null // Add username to task object
-      };
       const response = await axios.post('https://to-do-list-mu-green.vercel.app/task', taskData);
       if (response.status === 200) {
         console.log('Task added successfully:', response.data);
@@ -40,7 +32,6 @@ const Personal = () => {
         setDescription('');
         setCategory('');
         setDate('');
-        user.username;
         setShowModal(false);
       }
     } catch (error) {
@@ -155,10 +146,8 @@ const Personal = () => {
       const taskData = { title, description, category, date };
       if (editingTask) {
         updateTask(editingTask.id, taskData);
-        navigate(0)
       } else {
         addTask(taskData);
-        navigate(0)
       }
     };
     
@@ -181,15 +170,14 @@ const Personal = () => {
         return taskDate >= today;
     });
 
-    const personTasks = personalData.filter(task => task.category === 'Personal');
-    const personalTasks = personTasks.filter(task => task.username === user.username);
+    const personalTasks = personalData.filter(task => task.category === 'Personal');
 
   console.log('data => ', data);
   console.log(personalTasks);
     
 
     return (
-        <MDBCol className={`${isSidebarOpen ? 'col-md-8' : 'col'}`}>
+        <MDBCol className={`col-md-8`}>
         <MDBTypography tag='span' className="fw-bold display-6 py-5">
                 Personal <MDBTypography tag='span' className="float-end ms-auto border bg-secondary px-2 text-light rounded">{personalTasks.length}</MDBTypography>
             </MDBTypography>

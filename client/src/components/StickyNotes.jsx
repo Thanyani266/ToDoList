@@ -1,20 +1,15 @@
 import { MDBBtn, MDBCard, MDBCardBody, MDBCardText, MDBCardTitle, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBRow, MDBTextArea, MDBTypography } from "mdb-react-ui-kit"
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from 'axios'
 import ModalOne from "./ModalOne";
 import Modal from "./Modal";
-import { useNavigate, useOutletContext, useParams } from "react-router";
-import { UserContext } from "../context/UserContext";
+import { useParams } from "react-router";
 import { TrimTitle } from "./TrimTitle";
 import { TrimDesc } from "./TrimDesc";
 
 
 const StickyNotes = () => {
-    const { isSidebarOpen } = useOutletContext();
     const [data, setData] = useState([]);
-    const user = useContext(UserContext)
-    const navigate = useNavigate();
-
     useEffect(() => {
         getNotes();
     }, [])
@@ -41,7 +36,6 @@ const StickyNotes = () => {
       const response = await axios.delete(`https://to-do-list-mu-green.vercel.app/note/${id}`)
       if (response.status === 200) {
         getNotes();
-        navigate(0);
       }
     }
   }
@@ -61,12 +55,8 @@ const StickyNotes = () => {
       }
   }
 
-    const addNote = async (dat) => {
+    const addNote = async (noteData) => {
         try {
-          const noteData = {
-            ...dat,
-            username: user ? user.username : null // Add username to task object
-          };
           const response = await axios.post('https://to-do-list-mu-green.vercel.app/note', noteData);
           if (response.status === 200) {
             console.log('Note added successfully:', response.data);
@@ -123,12 +113,10 @@ const StickyNotes = () => {
           updateNote(editingNote.id, noteData);
           setShowModal(false)
           setShowModalOne(false)
-          navigate(0)
         } else {
           addNote(noteData);
           setShowModal(false)
           setShowModalOne(false)
-          navigate(0)
         }
       };
 
@@ -141,16 +129,15 @@ const StickyNotes = () => {
         setShowModal(true);
       };
 
-      const notesData = data.filter(task => task.username === user.username);
     
   return (
-    <MDBCol className={`${isSidebarOpen ? 'col-md-8' : 'col'}`}>
+    <MDBCol className={`col-md-8`}>
         <MDBTypography tag='span' className="fw-bold display-6">
             Sticky Wall
         </MDBTypography>
         <MDBContainer className="mt-4 border rounded p-5">
             <MDBRow>
-            {notesData && notesData.map((item) => {
+            {data && data.map((item) => {
                 return (
             <MDBCol lg='4' md='6' className="mb-3" key={item.id}>
             <MDBCard style={{height: '300px'}} className={`${item.background} bg-opacity-25 pe-auto`}>
