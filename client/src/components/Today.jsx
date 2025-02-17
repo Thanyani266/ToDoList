@@ -2,13 +2,14 @@ import axios from "axios";
 import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGroup, MDBListGroupItem, MDBTextArea, MDBTypography } from "mdb-react-ui-kit"
 import { useEffect, useState } from "react";
 import Modal from './Modal';
+import PropTypes from 'prop-types';
 import '../App.css'
 import { useParams } from "react-router";
 import ModalOne from "./ModalOne";
 import Badge from "./Badge";
 
 
-const Today = () => {
+const Today = ({isSidebarOpen}) => {
   const [data, setData] = useState([]);
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
@@ -175,7 +176,7 @@ const Today = () => {
   console.log(todayTasks);
   
   return (
-    <MDBCol className={`${'col-md-8'}`}>
+    <MDBCol className={`${isSidebarOpen ? 'content-shifted': 'content'}`}>
     <MDBTypography tag='span' className="fw-bold display-6 py-5">
             Today <MDBTypography tag='span' className="float-end ms-auto border bg-secondary px-2 text-light rounded">{todayTasks.length}</MDBTypography>
         </MDBTypography>
@@ -236,5 +237,9 @@ const Today = () => {
     </MDBCol>
   )
 }
+
+Today.propTypes = {
+  isSidebarOpen: PropTypes.bool
+};
 
 export default Today

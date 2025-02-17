@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import axios from 'axios';
 import Modal from './Modal';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import ModalOne from './ModalOne';
 import Badge from './Badge';
 
-const Personal = () => {
+const Personal = ({isSidebarOpen}) => {
   const [data, setData] = useState([]);
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
@@ -177,7 +178,7 @@ const Personal = () => {
     
 
     return (
-        <MDBCol className={`col-md-8`}>
+        <MDBCol className={`${isSidebarOpen ? 'content-shifted': 'content'}`}>
         <MDBTypography tag='span' className="fw-bold display-6 py-5">
                 Personal <MDBTypography tag='span' className="float-end ms-auto border bg-secondary px-2 text-light rounded">{personalTasks.length}</MDBTypography>
             </MDBTypography>
@@ -241,5 +242,9 @@ const Personal = () => {
         </MDBListGroup> 
         </MDBCol>
 )}
+
+Personal.propTypes = {
+  isSidebarOpen: PropTypes.bool
+};
 
 export default Personal

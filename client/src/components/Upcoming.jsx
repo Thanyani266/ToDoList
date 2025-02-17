@@ -2,11 +2,12 @@ import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGr
 import { useEffect, useState } from "react";
 import ModalOne from "./ModalOne";
 import Modal from "./Modal";
+import PropTypes from 'prop-types';
 import { useParams } from "react-router";
 import axios from "axios";
 import Badge from "./Badge";
 
-const Upcoming = () => {
+const Upcoming = ({isSidebarOpen}) => {
   
   const [data, setData] = useState([]);
   const [checkedItems, setCheckedItems] = useState(() => {
@@ -215,7 +216,7 @@ const Upcoming = () => {
   console.log(todayTasks);
 
   return (
-    <MDBCol className={`col-md-8`}>
+    <MDBCol className={`${isSidebarOpen ? 'content-shifted': 'content'}`}>
     <MDBTypography tag='span' className="fw-bold display-6 py-5">
             Upcoming <MDBTypography tag='span' className="float-end ms-auto border bg-secondary px-2 text-light rounded">{todayTasks.length + tomorrowTasks.length + weekendTasks.length}</MDBTypography>
         </MDBTypography>
@@ -397,5 +398,9 @@ const Upcoming = () => {
       
   )
 }
+
+Upcoming.propTypes = {
+  isSidebarOpen: PropTypes.bool
+};
 
 export default Upcoming

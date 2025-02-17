@@ -37,4 +37,12 @@
   .page-content.closed {
     margin-left: 0; /* Remove margin when sidebar is hidden */
   }
+
+  .content-shifted {
+    margin-left: 250px; /* Adjust based on your design */
+  }
+
+  .content {
+    margin-left: 0;
+  }
   

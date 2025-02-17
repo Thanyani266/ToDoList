@@ -1,14 +1,13 @@
 import { MDBBtn, MDBCol, MDBContainer, MDBIcon, MDBListGroup, MDBListGroupItem, MDBNavbar, MDBRow, MDBTypography } from "mdb-react-ui-kit"
 import { Link } from "react-router"
-//import { useContext } from "react"
-//import { userContext } from "../context/authContext"
+import PropTypes from 'prop-types';
 import { useLocation } from "react-router-dom"
 import axios from "axios"
 import { useEffect, useState } from "react"
 import '../App.css'
 
 
-const Sidebar = () => {
+const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const [activeTab, setActiveTab] = useState("Today");
   const [tData, setTData] = useState([]);
   
@@ -42,14 +41,6 @@ const Sidebar = () => {
       setActiveTab("Work")
     }
   }, [location])
-  const handleLogout = () => {
-    axios.get('https://to-do-list-mu-green.vercel.app/logout')
-    .then(res => {
-      if(res){
-        window.location.href = '/'
-      }
-    })
-  }
 
   const isToday = (someDate) => {
     const today = new Date();
@@ -128,48 +119,53 @@ const workTasks = workData.filter(task => task.category === 'Work');
 
   return (
     <>
-    <header> 
+    <header className={`${isSidebarOpen ? 'd-none' : 'd-block'}`}> 
       <MDBNavbar expand='lg' light bgColor='white' fixed>
         <MDBContainer fluid>
-          <MDBBtn className={`btn-outline-warning`}>
+          <MDBBtn className={`btn-outline-warning`} onClick={toggleSidebar}>
             <MDBIcon fas icon='bars' size="lg" />
           </MDBBtn>
         </MDBContainer>
       </MDBNavbar>
     </header>
-    <MDBCol md='3' className={`sidebar`}>
+    <MDBCol md='3' className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
         <MDBContainer className="border border-2 border-warning rounded shadow">
           <MDBRow className="d-flex border-bottom">
             
           <MDBTypography tag='span' className="fw-bold p-2">
-            Welcome, User<MDBIcon fas icon="times" className="float-end ms-auto display-6 border border-2 rounded" style={{cursor: 'pointer'}} />
+            Welcome, User<MDBIcon fas icon="times" className="float-end ms-auto display-6 border border-2 rounded" style={{cursor: 'pointer'}} onClick={toggleSidebar}/>
           </MDBTypography>
           </MDBRow>
           <MDBTypography tag='p' className="fs6 mt-2 text-uppercase fw-bold">
             Tasks
           </MDBTypography>
           <MDBListGroup light>
-            <Link to='/tasks/upcoming' onClick={() => setActiveTab("Upcoming")}><MDBListGroupItem className={`${activeTab === "Upcoming" ? "active text-warning bg-seconary" : ""} border rounded px-2 mb-3 py-2`}><MDBIcon fas icon="angle-double-right"  className="me-2" /> Upcoming <MDBTypography tag='span' className={`${activeTab === "Upcoming" ? "text-dark bg-warning bg-opacity-75" : ""} float-end ms-auto border bg-secondary px-2 text-light rounded`}>{todayTasks.length+tomorrowTasks.length+weekendTasks.length}</MDBTypography></MDBListGroupItem></Link>
-            <Link to='/tasks/today' onClick={() => setActiveTab("Today")}><MDBListGroupItem className={`${activeTab === "Today" ? "active text-warning bg-seconary" : ""} border rounded px-2 mb-3 py-2`}><MDBIcon fas icon="calendar-day" className="me-2"/> Today <MDBTypography tag='span' className={`${activeTab === "Today" ? "text-dark bg-warning bg-opacity-75" : ""}  float-end ms-auto border bg-secondary px-2 text-light rounded`}>{todayTasks.length}</MDBTypography></MDBListGroupItem></Link>
-            <Link to='/tasks/calendar' onClick={() => setActiveTab("Calendar")}><MDBListGroupItem className={`${activeTab === "Calendar" ? "active text-warning bg-seconary" : ""} border rounded px-2 mb-3 py-2`}><MDBIcon fas icon="calendar-alt"  className="me-2" /> Calendar</MDBListGroupItem></Link>
-            <Link to='/tasks/notes' onClick={() => setActiveTab("Sticky")}><MDBListGroupItem className={`${activeTab === "Sticky" ? "active text-warning bg-seconary" : ""} border rounded px-2 py-2 mb-3`}><MDBIcon fas icon="sticky-note"  className="me-2" /> Sticky Wall</MDBListGroupItem></Link>
+            <Link to='/upcoming' onClick={() => setActiveTab("Upcoming")}><MDBListGroupItem className={`${activeTab === "Upcoming" ? "active text-warning bg-seconary" : ""} border rounded px-2 mb-3 py-2`}><MDBIcon fas icon="angle-double-right"  className="me-2" /> Upcoming <MDBTypography tag='span' className={`${activeTab === "Upcoming" ? "text-dark bg-warning bg-opacity-75" : ""} float-end ms-auto border bg-secondary px-2 text-light rounded`}>{todayTasks.length+tomorrowTasks.length+weekendTasks.length}</MDBTypography></MDBListGroupItem></Link>
+            <Link to='/' onClick={() => setActiveTab("Today")}><MDBListGroupItem className={`${activeTab === "Today" ? "active text-warning bg-seconary" : ""} border rounded px-2 mb-3 py-2`}><MDBIcon fas icon="calendar-day" className="me-2"/> Today <MDBTypography tag='span' className={`${activeTab === "Today" ? "text-dark bg-warning bg-opacity-75" : ""}  float-end ms-auto border bg-secondary px-2 text-light rounded`}>{todayTasks.length}</MDBTypography></MDBListGroupItem></Link>
+            <Link to='/calendar' onClick={() => setActiveTab("Calendar")}><MDBListGroupItem className={`${activeTab === "Calendar" ? "active text-warning bg-seconary" : ""} border rounded px-2 mb-3 py-2`}><MDBIcon fas icon="calendar-alt"  className="me-2" /> Calendar</MDBListGroupItem></Link>
+            <Link to='/notes' onClick={() => setActiveTab("Sticky")}><MDBListGroupItem className={`${activeTab === "Sticky" ? "active text-warning bg-seconary" : ""} border rounded px-2 py-2 mb-3`}><MDBIcon fas icon="sticky-note"  className="me-2" /> Sticky Wall</MDBListGroupItem></Link>
           </MDBListGroup>
           <MDBTypography tag='p' className="fs6 mt-5 text-uppercase fw-bold">  
             Lists
           </MDBTypography>
           <MDBListGroup light className="border-bottom">
-            <Link to='/tasks/work' onClick={() => setActiveTab('Work')}><MDBListGroupItem className={`${activeTab === `Work` ? "active text-warning bg-secondary bg-opacity-25" : ""} border rounded px-2 mb-2 py-2`}><MDBIcon fas icon="tag" className={`${activeTab === `Work` ? "active text-warning bg-transparent" : ""} me-2 text-dark`}/> Work <MDBTypography tag='span' className={`${activeTab === "Work" ? "text-dark bg-warning bg-opacity-75" : ""} float-end ms-auto border bg-secondary px-2 text-light rounded`}>{workTasks.length}</MDBTypography></MDBListGroupItem></Link>
-            <Link to='/tasks/personal' onClick={() => setActiveTab('Personal')}><MDBListGroupItem className={`${activeTab === `Personal` ? "active text-warning bg-secondary bg-opacity-25" : ""} border rounded px-2 mb-2 py-2`}><MDBIcon fas icon="tag" className={`${activeTab === `Personal` ? "active text-warning bg-transparent" : ""} me-2 `}/> Personal <MDBTypography tag='span' className={`${activeTab === "Personal" ? "text-dark bg-warning bg-opacity-75" : ""} float-end ms-auto border bg-secondary px-2 text-light rounded`}>{personalTasks.length}</MDBTypography></MDBListGroupItem></Link>
+            <Link to='/work' onClick={() => setActiveTab('Work')}><MDBListGroupItem className={`${activeTab === `Work` ? "active text-warning bg-secondary bg-opacity-25" : ""} border rounded px-2 mb-2 py-2`}><MDBIcon fas icon="tag" className={`${activeTab === `Work` ? "active text-warning bg-transparent" : ""} me-2 text-dark`}/> Work <MDBTypography tag='span' className={`${activeTab === "Work" ? "text-dark bg-warning bg-opacity-75" : ""} float-end ms-auto border bg-secondary px-2 text-light rounded`}>{workTasks.length}</MDBTypography></MDBListGroupItem></Link>
+            <Link to='/personal' onClick={() => setActiveTab('Personal')}><MDBListGroupItem className={`${activeTab === `Personal` ? "active text-warning bg-secondary bg-opacity-25" : ""} border rounded px-2 mb-2 py-2`}><MDBIcon fas icon="tag" className={`${activeTab === `Personal` ? "active text-warning bg-transparent" : ""} me-2 `}/> Personal <MDBTypography tag='span' className={`${activeTab === "Personal" ? "text-dark bg-warning bg-opacity-75" : ""} float-end ms-auto border bg-secondary px-2 text-light rounded`}>{personalTasks.length}</MDBTypography></MDBListGroupItem></Link>
             
             <MDBListGroupItem><MDBBtn className="w-100 text-start mt-2 bg-transparent border text-success disabled"><MDBIcon fas icon="plus" className="me-2" /> new list </MDBBtn></MDBListGroupItem>
           </MDBListGroup>
           <MDBListGroup className="border-none py-3">
-            <MDBBtn onClick={handleLogout} className="btn-outline-dark"><MDBIcon fas icon="sign-out-alt" className="me-2"/> Sign Out</MDBBtn>
+            <MDBBtn className="btn-outline-dark disabled"><MDBIcon fas icon="sign-out-alt" className="me-2"/> Sign Out</MDBBtn>
           </MDBListGroup>
         </MDBContainer>
     </MDBCol>
     </>
   )
 }
+
+Sidebar.propTypes = {
+  isSidebarOpen: PropTypes.bool,
+  toggleSidebar: PropTypes.bool
+};
 
 export default Sidebar

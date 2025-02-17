@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import axios from 'axios';
 import Modal from './Modal';
+import PropTypes from 'prop-types';
 import ModalOne from './ModalOne';
 import moment from 'moment';
 import Badge from './Badge';
 
-const Work = () => {
+const Work = ({isSidebarOpen}) => {
   const [data, setData] = useState([]);
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
@@ -178,7 +179,7 @@ const Work = () => {
     
 
     return (
-        <MDBCol className={`col-md-8`}>
+        <MDBCol className={`${isSidebarOpen ? 'content-shifted': 'content'}`}>
         <MDBTypography tag='span' className="fw-bold display-6 py-5">
                 Work <MDBTypography tag='span' className="float-end ms-auto border bg-secondary px-2 text-light rounded">{workTasks.length}</MDBTypography>
             </MDBTypography>
@@ -241,5 +242,9 @@ const Work = () => {
         </MDBListGroup> 
         </MDBCol>
 )}
+
+Work.propTypes = {
+  isSidebarOpen: PropTypes.bool
+};
 
 export default Work

@@ -5,26 +5,33 @@ import './App.css';
 import { MDBContainer, MDBRow } from 'mdb-react-ui-kit';
 import Today from './components/Today';
 import Upcoming from './components/Upcoming';
-import Sideshit from './components/Sideshit';
+import Sidebar from './components/Sidebar';
 import Calendar1 from './components/Calendar1';
 import StickyNotes from './components/StickyNotes';
 import Personal from './components/Personal';
 import Work from './components/Work';
+import { useState } from 'react';
 
 const App = () => {
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  
+    const toggleSidebar = () => {
+      setIsSidebarOpen(!isSidebarOpen);
+    };
 
   return (
   <Router>
     <MDBContainer>
       <MDBRow className="py-1">
-          <Sideshit />
+          <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
             <Routes>
-              <Route index element={<Today />} />
-              <Route path='upcoming' element={<Upcoming />} />
-              <Route path='calendar' element={<Calendar1 />} />
-              <Route path='notes' element={<StickyNotes />} />
-              <Route path='personal' element={<Personal />} />
-              <Route path='work' element={<Work />} />
+              <Route index element={<Today context={{ isSidebarOpen }}/>} />
+              <Route path='upcoming' element={<Upcoming context={{ isSidebarOpen }}/>} />
+              <Route path='calendar' element={<Calendar1 context={{ isSidebarOpen }} />} />
+              <Route path='notes' element={<StickyNotes context={{ isSidebarOpen }} />} />
+              <Route path='personal' element={<Personal context={{ isSidebarOpen }} />} />
+              <Route path='work' element={<Work context={{ isSidebarOpen }} />} />
             </Routes>
       </MDBRow>
     </MDBContainer>

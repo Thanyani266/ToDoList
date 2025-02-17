@@ -2,13 +2,14 @@ import { MDBBtn, MDBCard, MDBCardBody, MDBCardText, MDBCardTitle, MDBCol, MDBCon
 import { useEffect, useState } from "react";
 import axios from 'axios'
 import ModalOne from "./ModalOne";
+import PropTypes from 'prop-types';
 import Modal from "./Modal";
 import { useParams } from "react-router";
 import { TrimTitle } from "./TrimTitle";
 import { TrimDesc } from "./TrimDesc";
 
 
-const StickyNotes = () => {
+const StickyNotes = ({isSidebarOpen}) => {
     const [data, setData] = useState([]);
     useEffect(() => {
         getNotes();
@@ -131,7 +132,7 @@ const StickyNotes = () => {
 
     
   return (
-    <MDBCol className={`col-md-8`}>
+    <MDBCol className={`${isSidebarOpen ? 'content-shifted': 'content'}`}>
         <MDBTypography tag='span' className="fw-bold display-6">
             Sticky Wall
         </MDBTypography>
@@ -192,5 +193,9 @@ const StickyNotes = () => {
     </MDBCol>
   )
 }
+
+StickyNotes.propTypes = {
+  isSidebarOpen: PropTypes.bool
+};
 
 export default StickyNotes
