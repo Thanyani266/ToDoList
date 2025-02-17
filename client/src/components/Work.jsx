@@ -1,6 +1,6 @@
 import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGroup, MDBListGroupItem, MDBTextArea, MDBTypography } from 'mdb-react-ui-kit';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import axios from 'axios';
 import Modal from './Modal';
 import PropTypes from 'prop-types';
@@ -9,6 +9,7 @@ import moment from 'moment';
 import Badge from './Badge';
 
 const Work = ({isSidebarOpen}) => {
+  const navigate = useNavigate()
   const [data, setData] = useState([]);
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
@@ -147,8 +148,10 @@ const Work = ({isSidebarOpen}) => {
       const taskData = { title, description, category, date };
       if (editingTask) {
         updateTask(editingTask.id, taskData);
+        navigate(0)
       } else {
         addTask(taskData);
+        navigate(0)
       }
     };
     
