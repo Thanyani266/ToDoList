@@ -1,70 +1,71 @@
-// Required packages
-const fsPromises = require('fs').promises
-const path = require('path')
-const { v4 : uuid } = require('uuid')
+const axios = require('axios');
+const { v4: uuid } = require('uuid');
 
-// Sticky notes data table
-const data = {
-    notes: require('../models/notes.json'),
-    setNotes: function (data) { this.notes = data}
+const API_URL = 'https://json-server-data-5js7.onrender.com/notes'; // Replace with your web server URL
+
 }
+// Getting all the sticky notes
+const getNotes = async (req, res) => {
+    try {
+        const response = await axios.get(API_URL);
+        res.json(response.data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
-// getting all the sticky notes
-const getNotes = (req, res) => {
-    res.json(data.notes)
-}
-
-// adding a new note
+// Adding a new note
 const createNote = async (req, res) => {
     const note = {
         title: req.body.title,
         description: req.body.description,
-        background: req.body.background,
-        username: req.body.username
+        background: req.body.background
+    };
+
+    const newNote = { ...note, id: uuid() };
+    try {
+        const response = await axios.post(API_URL, newNote);
+        res.status(201).json(response.data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-    console.log(note.title)
-    const newNote = {...note, id: uuid()};
-    data.setNotes([...data.notes, newNote])
-    await fsPromises.writeFile(
-        path.join(__dirname, '..', 'models', 'notes.json'),
-        JSON.stringify(data.notes)
-    );
-    console.log(data.notes)
-    res.status(201).json(data.notes) // 201 ==> created new sticky note
-}
+};
 
-// getting a single sticky note
-const getNote = (req, res) => {
-    const singleNote = data.notes.filter(note => note.id === req.params.id)
-    res.send(singleNote)
-}
+// Getting a single sticky note
+const getNote = async (req, res) => {
+    try {
+        const response = await axios.get(`${API_URL}/${req.params.id}`);
+        res.json(response.data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
-// deleting a single sticky note
+// Deleting a single sticky note
 const deleteNote = async (req, res) => {
-    notes = data.notes.filter(note => note.id !== req.params.id)
-    data.setNotes([...notes])
-    await fsPromises.writeFile(
-        path.join(__dirname, '..', 'models', 'notes.json'),
-        JSON.stringify(data.notes)
-    );
-    res.send("Task deleted successfully")
-}
+    try {
+        await axios.delete(`${API_URL}/${req.params.id}`);
+        res.send("Note deleted successfully");
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
-// editting a sticky note based on id
+// Editing a sticky note based on id
 const updateNote = async (req, res) => {
-    const note = data.notes.find(note => note.id === req.params.id)
+    const updatedNote = {
+        title: req.body.title,
+        description: req.body.description,
+        background: req.body.background
+    };
 
-    note.title = req.body.title;
-    note.description = req.body.description;
-    note.background = req.body.background;
+    try {
+        const response = await axios.put(`${API_URL}/${req.params.id}`, updatedNote);
+        res.send("Note updated successfully");
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
-    await fsPromises.writeFile(
-        path.join(__dirname, '..', 'models', 'notes.json'),
-        JSON.stringify(data.notes)
-    );
-
-    res.send("Task updated successfully")
-}
-
-// exporting the functions
-module.exports = { getNotes, createNote, getNote, deleteNote, updateNote }
+// Exporting the functions
+module.exports = { getNotes, createNote, getNote, deleteNote, updateNote };

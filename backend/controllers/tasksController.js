@@ -1,29 +1,28 @@
-// Required packages
-const fsPromises = require('fs').promises
-const path = require('path')
-const { v4 : uuid } = require('uuid')
+const axios = require('axios');
+const { v4: uuid } = require('uuid');
 
-// data table for tasks
-const data = {
-    tasks: require('../public/tasks.json'),
-    setTasks: function (data) { this.tasks = data}
-}
+const API_URL = 'https://json-server-data-5js7.onrender.com/tasks'; // Replace with your web server URL
 
-// getting all tasks
-const getTasks = (req, res) => {
-    res.json(data.tasks)
-}
-
-// getting tasks by category(list)
-const getTasksByList = async (req, res) => {
-    const category = req.params.category;
+// Getting all tasks
+const getTasks = async (req, res) => {
     try {
-        const tasks = await data.filter(task => task.category === category);
-        res.status(200).json(tasks);
+        const response = await axios.get(API_URL);
+        res.json(response.data);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-}
+};
+
+// Getting tasks by category(list)
+const getTasksByList = async (req, res) => {
+    const category = req.params.category;
+    try {
+        const response = await axios.get(`${API_URL}?category=${category}`);
+        res.json(response.data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
 // Adding a new task
 const createTask = async (req, res) => {
@@ -31,53 +30,54 @@ const createTask = async (req, res) => {
         title: req.body.title,
         description: req.body.description,
         category: req.body.category,
-        date: req.body.date,
-        username: req.body.username
+        date: req.body.date
+    };
+
+    const newTask = { ...task, id: uuid() };
+    try {
+        const response = await axios.post(API_URL, newTask);
+        res.status(201).json(response.data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-    console.log(task.date)
-    const newTask = {...task, id: uuid()};
-    data.setTasks([...data.tasks, newTask])
-    await fsPromises.writeFile(
-        path.join(__dirname, '..', 'public', 'tasks.json'),
-        JSON.stringify(data.tasks)
-    );
-    console.log(data.tasks)
-    res.status(201).json(data.tasks) // 201 ==> created new task
-}
+};
 
-// getting a single task
-const getTask = (req, res) => {
-    const singleTask = data.tasks.filter(task => task.id === req.params.id)
-    res.send(singleTask)
-}
+// Getting a single task
+const getTask = async (req, res) => {
+    try {
+        const response = await axios.get(`${API_URL}/${req.params.id}`);
+        res.json(response.data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
-// deleting a task
+// Deleting a task
 const deleteTask = async (req, res) => {
-    tasks = data.tasks.filter(task => task.id !== req.params.id)
-    data.setTasks([...tasks])
-    await fsPromises.writeFile(
-        path.join(__dirname, '..', 'models', 'tasks.json'),
-        JSON.stringify(data.tasks)
-    );
-    res.send("Task deleted successfully")
-}
+    try {
+        await axios.delete(`${API_URL}/${req.params.id}`);
+        res.send("Task deleted successfully");
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
-// editting a task
+// Editing a task
 const updateTask = async (req, res) => {
-    const task = data.tasks.find(task => task.id === req.params.id)
+    const updatedTask = {
+        title: req.body.title,
+        description: req.body.description,
+        category: req.body.category,
+        date: req.body.date
+    };
 
-    task.title = req.body.title;
-    task.description = req.body.description;
-    task.category = req.body.category;
-    task.date = req.body.date;
+    try {
+        const response = await axios.put(`${API_URL}/${req.params.id}`, updatedTask);
+        res.send("Task updated successfully");
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
-    await fsPromises.writeFile(
-        path.join(__dirname, '..', 'models', 'tasks.json'),
-        JSON.stringify(data.tasks)
-    );
-
-    res.send("Task updated successfully")
-}
-
-// exporting fns 
-module.exports = { getTasks, createTask, getTask, deleteTask, updateTask, getTasksByList }
+// Exporting functions
+module.exports = { getTasks, createTask, getTask, deleteTask, updateTask, getTasksByList };
