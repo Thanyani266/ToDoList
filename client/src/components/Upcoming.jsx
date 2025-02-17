@@ -148,8 +148,10 @@ const Upcoming = ({isSidebarOpen}) => {
       const taskData = { title, description, category, date };
       if (editingTask) {
         updateTask(editingTask.id, taskData);
+        window.location.reload()
       } else {
         addTask(taskData);
+        window.location.reload()
       }
     };
     
