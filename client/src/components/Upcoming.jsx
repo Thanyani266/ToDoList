@@ -247,10 +247,10 @@ const Upcoming = ({isSidebarOpen}) => {
       <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
         <MDBContainer style={{textAlign: 'start'}}>
         <h5 className="fw-bold text-center">Task: </h5>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: </span>{task.title}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Description: </span>{task.description}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">List: </span>{task.category}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Due date: </span>{task.date}</div>
+        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: </span>{task && task.title}</div>
+        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Description: </span>{task && task.description}</div>
+        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">List: </span>{task && task.category}</div>
+        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Due date: </span>{task && task.date}</div>
         <MDBBtn className="me-1" onClick={() => startEditing(task)}>edit</MDBBtn>
         <MDBBtn onClick={() => deleteTask(task.id)}>delete</MDBBtn>
         </MDBContainer>
