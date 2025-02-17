@@ -3,7 +3,6 @@ const { v4: uuid } = require('uuid');
 
 const API_URL = 'https://json-server-data-5js7.onrender.com/notes'; // Replace with your web server URL
 
-}
 // Getting all the sticky notes
 const getNotes = async (req, res) => {
     try {
