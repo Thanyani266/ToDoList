@@ -1,6 +1,7 @@
 import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGroup, MDBListGroupItem, MDBRow, MDBTextArea, MDBTypography } from "mdb-react-ui-kit"
 import { useEffect, useState } from "react";
 import ModalOne from "./ModalOne";
+import ModalOne2 from "./ModalOne2";
 import Modal from "./Modal";
 import PropTypes from 'prop-types';
 import { useParams } from "react-router";
@@ -257,7 +258,7 @@ const Upcoming = ({isSidebarOpen}) => {
         </>
       </MDBListGroupItem>
       ))}
-      <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
+      <ModalOne2 show={showModalOne} onClose={handleCloseModalOne}>
         <MDBContainer style={{textAlign: 'start'}}>
         {showModalOne && selectedTask && (
           <>
@@ -271,7 +272,7 @@ const Upcoming = ({isSidebarOpen}) => {
         </>
       )}
         </MDBContainer>
-      </ModalOne>
+      </ModalOne2>
       <Modal show={showModal} onClose={handleCloseModal}>
         <MDBContainer>
         <h5 className="fw-bold">{editingTask ? 'Update Task' : 'Add New Task'}</h5>
