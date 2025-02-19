@@ -206,7 +206,7 @@ const Today = ({isSidebarOpen}) => {
       <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
       <MDBContainer className="border p-3 rounded bg-light" key={task && task.id} style={{ textAlign: 'start' }}>
       <h5 className="fw-bold text-center">Task Details:</h5>
-      <div className="fs-4 border p-2 rounded mb-2">
+      <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
         <span className="fw-bold text-muted">Title: </span>{task && task.title}
       </div>
       <div className="fs-4 border p-2 rounded mb-2">
