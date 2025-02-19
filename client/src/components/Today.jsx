@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Modal from './Modal';
 import PropTypes from 'prop-types';
 import '../App.css'
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import ModalOne from "./ModalOne";
 import Badge from "./Badge";
 
@@ -15,6 +15,8 @@ const Today = ({isSidebarOpen}) => {
     const saved = localStorage.getItem("checkedItems");
     return saved ? JSON.parse(saved) : {};
   });
+
+  const navigate = useNavigate()
 
   const [tasks, setTasks] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
@@ -151,7 +153,7 @@ const Today = ({isSidebarOpen}) => {
         updateTask(editingTask.id, taskData);
         setShowModal(false);
         setTasks([...tasks, taskData]);
-        window.location.reload();
+        navigate(0)
       } else {
         addTask(taskData);
         setShowModal(false);
