@@ -108,6 +108,8 @@ const Today = ({isSidebarOpen}) => {
     }
   }, [id])
 
+  console.log('item id:', id)
+
   const [showModal, setShowModal] = useState(false);
   const [showModalOne, setShowModalOne] = useState(false);
 
@@ -204,7 +206,7 @@ const Today = ({isSidebarOpen}) => {
       <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
         <MDBContainer style={{textAlign: 'start'}} key={task && task.id}>
         <h5 className="fw-bold text-center">Task: </h5>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Titleui: </span>{task && task.title}</div>
+        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: </span>{task && task.title}</div>
         <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Description: </span>{task && task.description}</div>
         <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">List: </span>{task && task.category}</div>
         <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Due date: </span>{task && task.date}</div>
