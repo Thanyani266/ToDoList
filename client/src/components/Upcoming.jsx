@@ -257,25 +257,19 @@ const Upcoming = ({isSidebarOpen}) => {
         </>
       </MDBListGroupItem>
       ))}
-      <ModalOne key={showModalOne} show={showModalOne} onClose={handleCloseModalOne}>
+      <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
         <MDBContainer style={{textAlign: 'start'}}>
         {showModalOne && selectedTask && (
-        <div className="modal">
-          <h2>Task Details</h2>
-          <p><strong>Title:</strong> {selectedTask.title}</p>
-          <p><strong>Description:</strong> {selectedTask.description}</p>
-          <p><strong>Category:</strong> {selectedTask.category}</p>
-          <p><strong>Date:</strong> {selectedTask.date}</p>
-          <button onClick={() => setShowModalOne(false)}>Close</button>
-        </div>
-      )}
+          <>
         <h5 className="fw-bold text-center">Task: </h5>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: {task && task.description}</span>No Title</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Description: </span>{task && task.description}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">List: </span>{task && task.category}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Due date: </span>{task && task.date}</div>
+        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: </span>{selectedTask.title}</div>
+        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Description: </span>{selectedTask.description}</div>
+        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">List: </span>{selectedTask.category}</div>
+        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Due date: </span>{selectedTask.date}</div>
         <MDBBtn className="me-1" onClick={() => startEditing(task)}>edit</MDBBtn>
         <MDBBtn onClick={() => deleteTask(task.id)}>delete</MDBBtn>
+        </>
+      )}
         </MDBContainer>
       </ModalOne>
       <Modal show={showModal} onClose={handleCloseModal}>
