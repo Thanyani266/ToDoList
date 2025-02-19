@@ -218,8 +218,12 @@ const Today = ({isSidebarOpen}) => {
       <div className="fs-4 border p-2 rounded mb-2">
         <span className="fw-bold text-muted">Due date: </span>{task && task.date}
       </div>
-      <MDBBtn className="me-1" color="info" onClick={() => startEditing(task)}>Edit</MDBBtn>
-      <MDBBtn color="danger" onClick={() => deleteTask(task.id)}>Delete</MDBBtn>
+      <MDBBtn className="me-1" color="info" onClick={() => startEditing(task)}>
+      <MDBIcon fas icon='edit' size="lg" />
+      </MDBBtn>
+      <MDBBtn color="danger" onClick={() => deleteTask(task.id)}>
+      <MDBIcon fas icon='trash' size='lg'/>
+      </MDBBtn>
     </MDBContainer>
       </ModalOne>
       <Modal show={showModal} onClose={handleCloseModal}>
