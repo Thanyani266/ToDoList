@@ -108,7 +108,6 @@ const Today = ({isSidebarOpen}) => {
     }
   }, [id])
 
-  console.log('task id:', task.id)
 
   const [showModal, setShowModal] = useState(false);
   const [showModalOne, setShowModalOne] = useState(false);
@@ -175,6 +174,7 @@ const Today = ({isSidebarOpen}) => {
     const todayTasks = data.filter(task => isToday(task.date));
 
   console.log('data => ', data);
+  console.log('task item:', task);
   console.log(todayTasks);
   
   return (
