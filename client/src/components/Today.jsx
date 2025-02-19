@@ -197,7 +197,7 @@ const Today = ({isSidebarOpen}) => {
         </div>
         <MDBBtn onClick={() => startEditing(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-info`}><MDBIcon fas icon='edit' size="lg" /></MDBBtn>
         <MDBBtn onClick={() => getSingleTask(item.id)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-secondary`}><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
-        <Link to={`/taskview/:${item.id}`}>view details</Link>
+        <Link to={`/taskview/${item.id}`}>view details</Link>
         <MDBBtn onClick={() => deleteTask(item.id)} className="me-1 rounded-pill btn-outline-danger">
           <MDBIcon fas icon='trash' size='lg'/>
         </MDBBtn></>
