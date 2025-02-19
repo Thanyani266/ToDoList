@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Modal from './Modal';
 import PropTypes from 'prop-types';
 import '../App.css'
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ModalOne from "./ModalOne";
 import Badge from "./Badge";
 
@@ -15,8 +15,6 @@ const Today = ({isSidebarOpen}) => {
     const saved = localStorage.getItem("checkedItems");
     return saved ? JSON.parse(saved) : {};
   });
-
-  const navigate = useNavigate()
 
   const [tasks, setTasks] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
@@ -57,7 +55,6 @@ const Today = ({isSidebarOpen}) => {
         setDate('');
         setEditingTask(null);
         setShowModal(false);
-        navigate(0);
       }
     } catch (error) {
       console.error('Error updating task:', error);
@@ -67,6 +64,7 @@ const Today = ({isSidebarOpen}) => {
   
   useEffect(() => {
     getTasks();
+    window.location.reload();
   }, [])
 
   useEffect(() => {
