@@ -155,7 +155,7 @@ const Today = ({isSidebarOpen}) => {
         await addTask(taskData);
       }
     
-      // After the task has been added or updated, navigate
+      // After the task has been added or updated, you navigate
       navigate("/");
     };
     
