@@ -11,6 +11,7 @@ import StickyNotes from './components/StickyNotes';
 import Personal from './components/Personal';
 import Work from './components/Work';
 import { useState } from 'react';
+import TaskView from './components/TaskView';
 
 const App = () => {
 
@@ -32,6 +33,7 @@ const App = () => {
               <Route path='notes' element={<StickyNotes context={{ isSidebarOpen }} />} />
               <Route path='personal' element={<Personal context={{ isSidebarOpen }} />} />
               <Route path='work' element={<Work context={{ isSidebarOpen }} />} />
+              <Route path='taskview:id' element={<TaskView context={{ isSidebarOpen }} />} />
             </Routes>
       </MDBRow>
     </MDBContainer>

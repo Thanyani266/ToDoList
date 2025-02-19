@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Modal from './Modal';
 import PropTypes from 'prop-types';
 import '../App.css'
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ModalOne from "./ModalOne";
 import Badge from "./Badge";
 
@@ -174,7 +174,6 @@ const Today = ({isSidebarOpen}) => {
     const todayTasks = data.filter(task => isToday(task.date));
 
   console.log('data => ', data);
-  console.log('task item:', task);
   console.log(todayTasks);
   
   return (
@@ -198,6 +197,7 @@ const Today = ({isSidebarOpen}) => {
         </div>
         <MDBBtn onClick={() => startEditing(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-info`}><MDBIcon fas icon='edit' size="lg" /></MDBBtn>
         <MDBBtn onClick={() => getSingleTask(item.id)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-secondary`}><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
+        <Link to={`/taskview:${item.id}`}>view details</Link>
         <MDBBtn onClick={() => deleteTask(item.id)} className="me-1 rounded-pill btn-outline-danger">
           <MDBIcon fas icon='trash' size='lg'/>
         </MDBBtn></>

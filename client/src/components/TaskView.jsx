@@ -23,7 +23,7 @@ const TaskView = () => {
   return (
     <MDBCol md='4'>
         <MDBContainer>
-        <Link to='/tasks' ><strong>Go Back</strong></Link>
+        <Link to='/' ><strong>Go Back</strong></Link>
         <MDBTypography tag='h2' className='text-muted text-center mt-2'>{task && task.title}</MDBTypography>
         </MDBContainer>
     </MDBCol>
