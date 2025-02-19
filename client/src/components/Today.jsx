@@ -35,7 +35,7 @@ const Today = ({isSidebarOpen}) => {
         setCategory('');
         setDate('');
         setShowModal(false);
-        window.location.reload();
+        setTasks([...tasks, response.data]);
       }
     } catch (error) {
       console.error('Error adding task:', error);
