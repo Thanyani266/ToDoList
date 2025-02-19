@@ -28,6 +28,7 @@ const Today = ({isSidebarOpen}) => {
     try {
       const response = await axios.post('https://to-do-list-mu-green.vercel.app/task', taskData);
       if (response.status === 200) {
+        setTasks([...tasks, response.data]);
         console.log('Task added successfully:', response.data);
         // Optionally reset form fields here
         setTitle('');
@@ -35,7 +36,7 @@ const Today = ({isSidebarOpen}) => {
         setCategory('');
         setDate('');
         setShowModal(false);
-        setTasks([...tasks, response.data]);
+        
       }
     } catch (error) {
       console.error('Error adding task:', error);
