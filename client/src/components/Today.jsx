@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import Modal from './Modal';
 import PropTypes from 'prop-types';
 import '../App.css'
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import ModalOne from "./ModalOne";
 import Badge from "./Badge";
 
 
 const Today = ({isSidebarOpen}) => {
+  const navigate = useNavigate()
   const [data, setData] = useState([]);
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
@@ -144,16 +145,20 @@ const Today = ({isSidebarOpen}) => {
       setShowModal(false);
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
       event.preventDefault();
       const taskData = { title, description, category, date };
+    
       if (editingTask) {
-        updateTask(editingTask.id, taskData);
+        await updateTask(editingTask.id, taskData);
       } else {
-        addTask(taskData);
-        window.location.reload();
+        await addTask(taskData);
       }
+    
+      // After the task has been added or updated, navigate
+      navigate("/");
     };
+    
     
     const startEditing = (task) => {
       setTitle(task.title);
