@@ -209,13 +209,13 @@ const Today = ({isSidebarOpen}) => {
       <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
         <span className="fw-bold text-muted">Title: </span>{task && task.title}
       </div>
-      <div className="fs-4 border p-2 rounded mb-2">
+      <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
         <span className="fw-bold text-muted">Description: </span>{task && task.description}
       </div>
-      <div className="fs-4 border p-2 rounded mb-2">
+      <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
         <span className="fw-bold text-muted">Category: </span>{task && task.category}
       </div>
-      <div className="fs-4 border p-2 rounded mb-2">
+      <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
         <span className="fw-bold text-muted">Due date: </span>{task && task.date}
       </div>
       <MDBBtn className="me-1" color="info" onClick={() => startEditing(task)}>
