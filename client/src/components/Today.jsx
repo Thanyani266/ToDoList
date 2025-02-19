@@ -205,7 +205,7 @@ const Today = ({isSidebarOpen}) => {
       ))}
       <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
       <MDBContainer className="border p-3 rounded bg-light" key={task && task.id} style={{ textAlign: 'start' }}>
-      <h5 className="fw-bold text-center">Task:</h5>
+      <h5 className="fw-bold text-center">Task Details:</h5>
       <div className="fs-4 border p-2 rounded mb-2">
         <span className="fw-bold text-muted">Title: </span>{task && task.title}
       </div>
@@ -213,12 +213,12 @@ const Today = ({isSidebarOpen}) => {
         <span className="fw-bold text-muted">Description: </span>{task && task.description}
       </div>
       <div className="fs-4 border p-2 rounded mb-2">
-        <span className="fw-bold text-muted">List: </span>{task && task.category}
+        <span className="fw-bold text-muted">Category: </span>{task && task.category}
       </div>
       <div className="fs-4 border p-2 rounded mb-2">
         <span className="fw-bold text-muted">Due date: </span>{task && task.date}
       </div>
-      <MDBBtn className="me-1" color="primary" onClick={() => startEditing(task)}>Edit</MDBBtn>
+      <MDBBtn className="me-1" color="info" onClick={() => startEditing(task)}>Edit</MDBBtn>
       <MDBBtn color="danger" onClick={() => deleteTask(task.id)}>Delete</MDBBtn>
     </MDBContainer>
       </ModalOne>
