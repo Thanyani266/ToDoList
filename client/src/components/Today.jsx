@@ -151,13 +151,9 @@ const Today = ({isSidebarOpen}) => {
       const taskData = { title, description, category, date };
       if (editingTask) {
         updateTask(editingTask.id, taskData);
-        setShowModal(false);
-        setTasks([...tasks, taskData]);
-        navigate('/')
+        navigate(0)
       } else {
         addTask(taskData);
-        setShowModal(false);
-        setTasks([...tasks, taskData]);
         window.location.reload();
       }
     };
