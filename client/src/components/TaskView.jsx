@@ -7,7 +7,6 @@ const TaskView = () => {
 
     const [task, setTask] = useState(null);
     const {id} = useParams()
-    console.log("id ya matshimba:", id)
 
     useEffect(() => {
         if(id) {
@@ -21,6 +20,8 @@ const TaskView = () => {
             setTask({...response.data[0]});
           }
       }
+
+      console.log("task ya matshimba:", task)
   return (
     <MDBCol md='4'>
         <MDBContainer>
