@@ -57,6 +57,7 @@ const Today = ({isSidebarOpen}) => {
         setDate('');
         setEditingTask(null);
         setShowModal(false);
+        navigate(0);
       }
     } catch (error) {
       console.error('Error updating task:', error);
@@ -151,7 +152,6 @@ const Today = ({isSidebarOpen}) => {
       const taskData = { title, description, category, date };
       if (editingTask) {
         updateTask(editingTask.id, taskData);
-        navigate(0)
       } else {
         addTask(taskData);
         window.location.reload();
