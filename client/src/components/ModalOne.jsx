@@ -11,7 +11,7 @@ const ModalOne = ({ show, onClose, children }) => {
   return (
     <div className="modal-backdrop">
       <div className="modal-content">
-        <button onClick={onClose} className="modal-close-btn border rounded"><MDBIcon fas icon="times" /></button>
+        <button onClick={onClose} className="modal-close-btn border bg-light bg-opacity-50 rounded"><MDBIcon fas icon="times" /></button>
         {children}
       </div>
     </div>
