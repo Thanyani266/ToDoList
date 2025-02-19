@@ -150,10 +150,12 @@ const Today = ({isSidebarOpen}) => {
       if (editingTask) {
         updateTask(editingTask.id, taskData);
         setShowModal(false);
+        setTasks([...tasks, taskData]);
         window.location.reload();
       } else {
         addTask(taskData);
         setShowModal(false);
+        setTasks([...tasks, taskData]);
         window.location.reload();
       }
     };
