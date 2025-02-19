@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Modal from './Modal';
 import PropTypes from 'prop-types';
 import '../App.css'
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import ModalOne from "./ModalOne";
 import Badge from "./Badge";
 
