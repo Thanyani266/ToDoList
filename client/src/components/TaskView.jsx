@@ -7,6 +7,7 @@ const TaskView = () => {
 
     const [task, setTask] = useState(null);
     const {id} = useParams()
+    console.log(id)
 
     useEffect(() => {
         if(id) {
