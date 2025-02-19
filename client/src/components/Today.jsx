@@ -242,7 +242,7 @@ const Today = ({isSidebarOpen}) => {
         </select>
         <MDBInput required className='mb-4' type='date' id='form1Example8' label='date' name='date' value={date} onChange={(event) => setDate(event.target.value)} />
           <MDBBtn type='submit' block className='bg-secondary'>
-            {editingTask ? 'Update Task' : 'Add Task'}
+            {editingTask ? 'Save Changes' : 'Add Task'}
           </MDBBtn>
         </form>
         </MDBContainer>
