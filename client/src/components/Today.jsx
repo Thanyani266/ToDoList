@@ -115,7 +115,7 @@ const Today = ({isSidebarOpen}) => {
   const getSingleTask = async (id) => {
     const response = await axios.get(`https://to-do-list-mu-green.vercel.app/task/${id}`)
     if (response.status === 200) {
-        setTask({...response.data[0]});
+        setTask({...response.data});
         setShowModalOne(true);
       }
   }
