@@ -153,7 +153,7 @@ const Today = ({isSidebarOpen}) => {
         updateTask(editingTask.id, taskData);
         setShowModal(false);
         setTasks([...tasks, taskData]);
-        navigate(0)
+        navigate('/')
       } else {
         addTask(taskData);
         setShowModal(false);
