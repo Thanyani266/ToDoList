@@ -217,6 +217,11 @@ const Upcoming = ({isSidebarOpen}) => {
 
   console.log('data => ', data);
   console.log(task);
+  useEffect(() => {
+    console.log("Modal state:", showModalOne);
+    console.log("Task state:", task);
+  }, [showModalOne, task]);
+  
 
   return (
     <MDBCol className={`${isSidebarOpen ? 'content-shifted': 'content'}`}>
@@ -246,10 +251,10 @@ const Upcoming = ({isSidebarOpen}) => {
         </>
       </MDBListGroupItem>
       ))}
-      <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
+      <ModalOne key={showModalOne} show={showModalOne} onClose={handleCloseModalOne}>
         <MDBContainer style={{textAlign: 'start'}}>
         <h5 className="fw-bold text-center">Task: </h5>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title5: {task && task.description}</span>No Title</div>
+        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: {task && task.description}</span>No Title</div>
         <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Description: </span>{task && task.description}</div>
         <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">List: </span>{task && task.category}</div>
         <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Due date: </span>{task && task.date}</div>
@@ -362,7 +367,7 @@ const Upcoming = ({isSidebarOpen}) => {
         </> 
       </MDBListGroupItem>
       ))}
-      <ModalOne key={showModalOne} show={showModalOne} onClose={handleCloseModalOne}>
+      <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
         <MDBContainer style={{textAlign: 'start'}}>
         <h5 className="fw-bold text-center">Task: </h5>
         <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: </span>{task && task.title}</div>
