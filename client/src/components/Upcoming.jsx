@@ -8,6 +8,7 @@ import axios from "axios";
 import Badge from "./Badge";
 
 const Upcoming = ({isSidebarOpen}) => {
+  const [selectedTask, setSelectedTask] = useState(null);
   
   const [data, setData] = useState([]);
   const [checkedItems, setCheckedItems] = useState(() => {
@@ -107,6 +108,11 @@ const Upcoming = ({isSidebarOpen}) => {
         getSingleTask(id)
     }
   }, [id])
+  
+  const tascData = (task) => {
+    setSelectedTask(task);  // Store the task to display in the modal
+    setShowModalOne(true);  // Show the modal
+  };
 
   const [showModal, setShowModal] = useState(false);
   const [showModalOne, setShowModalOne] = useState(false);
@@ -244,7 +250,7 @@ const Upcoming = ({isSidebarOpen}) => {
             /></div><Badge>{item.category}</Badge>
         </div>
         <MDBBtn onClick={() => startEditing(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-info`}><MDBIcon fas icon='edit' size="lg" /></MDBBtn>
-        <MDBBtn onClick={() => getSingleTask(item.id)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-secondary`}><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
+        <MDBBtn onClick={() => tascData(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-secondary`}><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
         <MDBBtn onClick={() => deleteTask(item.id)} className="me-1 rounded-pill btn-outline-danger">
           <MDBIcon fas icon='trash' size='lg'/>
         </MDBBtn>
@@ -253,6 +259,16 @@ const Upcoming = ({isSidebarOpen}) => {
       ))}
       <ModalOne key={showModalOne} show={showModalOne} onClose={handleCloseModalOne}>
         <MDBContainer style={{textAlign: 'start'}}>
+        {showModalOne && selectedTask && (
+        <div className="modal">
+          <h2>Task Details</h2>
+          <p><strong>Title:</strong> {selectedTask.title}</p>
+          <p><strong>Description:</strong> {selectedTask.description}</p>
+          <p><strong>Category:</strong> {selectedTask.category}</p>
+          <p><strong>Date:</strong> {selectedTask.date}</p>
+          <button onClick={() => setShowModalOne(false)}>Close</button>
+        </div>
+      )}
         <h5 className="fw-bold text-center">Task: </h5>
         <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: {task && task.description}</span>No Title</div>
         <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Description: </span>{task && task.description}</div>
