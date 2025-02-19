@@ -204,15 +204,23 @@ const Today = ({isSidebarOpen}) => {
       </MDBListGroupItem>
       ))}
       <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
-        <MDBContainer style={{textAlign: 'start'}} key={task && task.id}>
-        <h5 className="fw-bold text-center">Task: </h5>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: </span>{task && task.title}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Description: </span>{task && task.description}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">List: </span>{task && task.category}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Due date: </span>{task && task.date}</div>
-        <MDBBtn className="me-1" onClick={() => startEditing(task)}>edit</MDBBtn>
-        <MDBBtn onClick={() => deleteTask(task.id)}>delete</MDBBtn>
-        </MDBContainer>
+      <MDBContainer className="border p-3 rounded bg-light" key={task && task.id} style={{ textAlign: 'start' }}>
+      <h5 className="fw-bold text-center">Task:</h5>
+      <div className="fs-4 border p-2 rounded mb-2">
+        <span className="fw-bold text-muted">Title: </span>{task && task.title}
+      </div>
+      <div className="fs-4 border p-2 rounded mb-2">
+        <span className="fw-bold text-muted">Description: </span>{task && task.description}
+      </div>
+      <div className="fs-4 border p-2 rounded mb-2">
+        <span className="fw-bold text-muted">List: </span>{task && task.category}
+      </div>
+      <div className="fs-4 border p-2 rounded mb-2">
+        <span className="fw-bold text-muted">Due date: </span>{task && task.date}
+      </div>
+      <MDBBtn className="me-1" color="primary" onClick={() => startEditing(task)}>Edit</MDBBtn>
+      <MDBBtn color="danger" onClick={() => deleteTask(task.id)}>Delete</MDBBtn>
+    </MDBContainer>
       </ModalOne>
       <Modal show={showModal} onClose={handleCloseModal}>
         <MDBContainer>
