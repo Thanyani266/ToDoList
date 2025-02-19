@@ -64,7 +64,6 @@ const Today = ({isSidebarOpen}) => {
   
   useEffect(() => {
     getTasks();
-    window.location.reload();
   }, [])
 
   useEffect(() => {
