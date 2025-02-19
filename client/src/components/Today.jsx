@@ -108,7 +108,7 @@ const Today = ({isSidebarOpen}) => {
     }
   }, [id])
 
-  console.log('item id:', useParams())
+  console.log('item id:', id)
 
   const [showModal, setShowModal] = useState(false);
   const [showModalOne, setShowModalOne] = useState(false);
