@@ -11,6 +11,9 @@ import Badge from "./Badge";
 
 const Today = ({isSidebarOpen}) => {
   const navigate = useNavigate()
+  useEffect(() => {
+    window.location.reload();
+  }, [navigate]);
   const [data, setData] = useState([]);
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
