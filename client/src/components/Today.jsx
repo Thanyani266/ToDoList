@@ -156,7 +156,9 @@ const Today = ({isSidebarOpen}) => {
       }
     
       // After the task has been added or updated, you navigate
-      navigate(0);
+      setTimeout(() => {
+        navigate(0);
+      }, 50);
     };
     
     
