@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import ModalOne from "./ModalOne";
 import Modal from "./Modal";
 import PropTypes from 'prop-types';
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import Badge from "./Badge";
 
 const Upcoming = ({isSidebarOpen}) => {
-  const [selectedTask, setSelectedTask] = useState(null);
+  const navigate = useNavigate();
   
   const [data, setData] = useState([]);
   const [checkedItems, setCheckedItems] = useState(() => {
@@ -95,7 +95,7 @@ const Upcoming = ({isSidebarOpen}) => {
       const response = await axios.delete(`https://to-do-list-mu-green.vercel.app/task/${id}`)
       if (response.status === 200) {
         getTasks();
-        window.location.reload()
+        navigate(0)
       }
     }
   }
@@ -108,11 +108,6 @@ const Upcoming = ({isSidebarOpen}) => {
         getSingleTask(id)
     }
   }, [id])
-  
-  const tascData = (task) => {
-    setSelectedTask(task);  // Store the task to display in the modal
-    setShowModalOne(true);  // Show the modal
-  };
 
   const [showModal, setShowModal] = useState(false);
   const [showModalOne, setShowModalOne] = useState(false);
@@ -120,7 +115,7 @@ const Upcoming = ({isSidebarOpen}) => {
   const getSingleTask = async (id) => {
     const response = await axios.get(`https://to-do-list-mu-green.vercel.app/task/${id}`)
     if (response.status === 200) {
-        setTask({...response.data[0]});
+        setTask({...response.data});
         setShowModalOne(true);
       }
   }
@@ -149,16 +144,18 @@ const Upcoming = ({isSidebarOpen}) => {
       setShowModal(false);
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
       event.preventDefault();
       const taskData = { title, description, category, date };
+    
       if (editingTask) {
-        updateTask(editingTask.id, taskData);
-        window.location.reload()
+        await updateTask(editingTask.id, taskData);
       } else {
-        addTask(taskData);
-        window.location.reload()
+        await addTask(taskData);
       }
+    
+      // After the task has been added or updated, you navigate
+      navigate(0);
     };
     
     const startEditing = (task) => {
@@ -250,7 +247,7 @@ const Upcoming = ({isSidebarOpen}) => {
             /></div><Badge>{item.category}</Badge>
         </div>
         <MDBBtn onClick={() => startEditing(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-info`}><MDBIcon fas icon='edit' size="lg" /></MDBBtn>
-        <MDBBtn onClick={() => tascData(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-secondary`}><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
+        <MDBBtn onClick={() => getSingleTask(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-secondary`}><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
         <MDBBtn onClick={() => deleteTask(item.id)} className="me-1 rounded-pill btn-outline-danger">
           <MDBIcon fas icon='trash' size='lg'/>
         </MDBBtn>
@@ -258,20 +255,28 @@ const Upcoming = ({isSidebarOpen}) => {
       </MDBListGroupItem>
       ))}
       <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
-        <MDBContainer style={{textAlign: 'start'}}>
-        {showModalOne && selectedTask && (
-          <>
-        <h5 className="fw-bold text-center">Task: </h5>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: </span>{selectedTask.title}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Description: </span>{selectedTask.description}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">List: </span>{selectedTask.category}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Due date: </span>{selectedTask.date}</div>
-        <MDBBtn className="me-1" onClick={() => startEditing(task)}>edit</MDBBtn>
-        <MDBBtn onClick={() => deleteTask(task.id)}>delete</MDBBtn>
-        </>
-      )}
-        </MDBContainer>
-      </ModalOne>
+            <MDBContainer className="border p-3 rounded bg-light" key={task && task.id} style={{ textAlign: 'start' }}>
+            <h5 className="fw-bold text-center">Task Details:</h5>
+            <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+              <span className="fw-bold text-muted">Title: </span>{task && task.title}
+            </div>
+            <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+              <span className="fw-bold text-muted">Description: </span>{task && task.description}
+            </div>
+            <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+              <span className="fw-bold text-muted">Category: </span>{task && task.category}
+            </div>
+            <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+              <span className="fw-bold text-muted">Due date: </span>{task && task.date}
+            </div>
+            <MDBBtn className="me-1" color="info" onClick={() => startEditing(task)}>
+            <MDBIcon fas icon='edit' size="lg" />
+            </MDBBtn>
+            <MDBBtn color="danger" onClick={() => deleteTask(task.id)}>
+            <MDBIcon fas icon='trash' size='lg'/>
+            </MDBBtn>
+          </MDBContainer>
+            </ModalOne>
       <Modal show={showModal} onClose={handleCloseModal}>
         <MDBContainer>
         <h5 className="fw-bold">{editingTask ? 'Update Task' : 'Add New Task'}</h5>
@@ -320,16 +325,28 @@ const Upcoming = ({isSidebarOpen}) => {
       </MDBListGroupItem>
       ))}
       <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
-        <MDBContainer style={{textAlign: 'start'}}>
-        <h5 className="fw-bold text-center">Task: </h5>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: </span>{task && task.title}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Description: </span>{task && task.description}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">List: </span>{task && task.category}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Due date: </span>{task && task.date}</div>
-        <MDBBtn className="me-1" onClick={() => startEditing(task)}>edit</MDBBtn>
-        <MDBBtn onClick={() => deleteTask(task.id)}>delete</MDBBtn>
-        </MDBContainer>
-      </ModalOne>
+            <MDBContainer className="border p-3 rounded bg-light" key={task && task.id} style={{ textAlign: 'start' }}>
+            <h5 className="fw-bold text-center">Task Details:</h5>
+            <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+              <span className="fw-bold text-muted">Title: </span>{task && task.title}
+            </div>
+            <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+              <span className="fw-bold text-muted">Description: </span>{task && task.description}
+            </div>
+            <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+              <span className="fw-bold text-muted">Category: </span>{task && task.category}
+            </div>
+            <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+              <span className="fw-bold text-muted">Due date: </span>{task && task.date}
+            </div>
+            <MDBBtn className="me-1" color="info" onClick={() => startEditing(task)}>
+            <MDBIcon fas icon='edit' size="lg" />
+            </MDBBtn>
+            <MDBBtn color="danger" onClick={() => deleteTask(task.id)}>
+            <MDBIcon fas icon='trash' size='lg'/>
+            </MDBBtn>
+          </MDBContainer>
+            </ModalOne>
       <Modal show={showModal} onClose={handleCloseModal}>
         <MDBContainer>
         <h5 className="fw-bold">{editingTask ? 'Update Task' : 'Add New Task'}</h5>
@@ -378,16 +395,28 @@ const Upcoming = ({isSidebarOpen}) => {
       </MDBListGroupItem>
       ))}
       <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
-        <MDBContainer style={{textAlign: 'start'}}>
-        <h5 className="fw-bold text-center">Task: </h5>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: </span>{task && task.title}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Description: </span>{task && task.description}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">List: </span>{task && task.category}</div>
-        <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Due date: </span>{task && task.date}</div>
-        <MDBBtn className="me-1" onClick={() => startEditing(task)}>edit</MDBBtn>
-        <MDBBtn onClick={() => deleteTask(task.id)}>delete</MDBBtn>
-        </MDBContainer>
-      </ModalOne>
+            <MDBContainer className="border p-3 rounded bg-light" key={task && task.id} style={{ textAlign: 'start' }}>
+            <h5 className="fw-bold text-center">Task Details:</h5>
+            <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+              <span className="fw-bold text-muted">Title: </span>{task && task.title}
+            </div>
+            <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+              <span className="fw-bold text-muted">Description: </span>{task && task.description}
+            </div>
+            <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+              <span className="fw-bold text-muted">Category: </span>{task && task.category}
+            </div>
+            <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+              <span className="fw-bold text-muted">Due date: </span>{task && task.date}
+            </div>
+            <MDBBtn className="me-1" color="info" onClick={() => startEditing(task)}>
+            <MDBIcon fas icon='edit' size="lg" />
+            </MDBBtn>
+            <MDBBtn color="danger" onClick={() => deleteTask(task.id)}>
+            <MDBIcon fas icon='trash' size='lg'/>
+            </MDBBtn>
+          </MDBContainer>
+            </ModalOne>
       <Modal show={showModal} onClose={handleCloseModal}>
         <MDBContainer>
         <h5 className="fw-bold">{editingTask ? 'Update Task' : 'Add New Task'}</h5>
@@ -404,7 +433,7 @@ const Upcoming = ({isSidebarOpen}) => {
         </select>
         <MDBInput required className='mb-4' type='date' id='form1Example8' label='date' name='date' value={date} onChange={(event) => setDate(event.target.value)} />
           <MDBBtn type='submit' block className='bg-secondary'>
-            {editingTask ? 'Update Task' : 'Add Task'}
+            {editingTask ? 'Save Changes' : 'Add Task'}
           </MDBBtn>
         </form>
         </MDBContainer>
