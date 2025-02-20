@@ -96,6 +96,7 @@ const Today = ({isSidebarOpen}) => {
       const response = await axios.delete(`https://to-do-list-mu-green.vercel.app/task/${id}`)
       if (response.status === 200) {
         getTasks();
+        navigate(0);
       }
     }
   }
@@ -156,9 +157,7 @@ const Today = ({isSidebarOpen}) => {
       }
     
       // After the task has been added or updated, you navigate
-      setTimeout(() => {
-        navigate(0);
-      }, 50);
+      navigate(0);
     };
     
     
