@@ -156,7 +156,7 @@ const Today = ({isSidebarOpen}) => {
       }
     
       // After the task has been added or updated, you navigate
-      navigate("/");
+      navigate(0);
     };
     
     
