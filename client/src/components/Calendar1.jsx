@@ -5,12 +5,13 @@ import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import './Calendar.css'
 import PropTypes from 'prop-types';
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import Modal from "./Modal"
 import ModalOne from "./ModalOne"
 import Badge from "./Badge"
 
 const Calendar1 = ({isSidebarOpen}) => {
+  const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [checkedItems] = useState(() => {
@@ -108,7 +109,7 @@ const Calendar1 = ({isSidebarOpen}) => {
     try {
       const response = await axios.get(`https://to-do-list-mu-green.vercel.app/task/${id}`);
       if (response.status === 200) {
-        setTask({...response.data[0]});
+        setTask({...response.data});
         setShowModalOne(true);
       }
     } catch (error) {
@@ -147,6 +148,7 @@ const Calendar1 = ({isSidebarOpen}) => {
         const response = await axios.delete(`https://to-do-list-mu-green.vercel.app/task/${id}`);
         if (response.status === 200) {
           getTasks();
+          navigate(0)
         }
       } catch (error) {
         console.error('Error deleting task', error);
@@ -154,12 +156,14 @@ const Calendar1 = ({isSidebarOpen}) => {
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const taskData = { title, description, category, date };
     if (editingTask) {
-      updateTask(editingTask.id, taskData);
+      await updateTask(editingTask.id, taskData);
     }
+
+    navigate(0);
   };
 
   const startEditing = (task) => {
@@ -202,15 +206,27 @@ const Calendar1 = ({isSidebarOpen}) => {
                 
             ))}
             <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
-                    <MDBContainer style={{textAlign: 'start'}}>
-                    <h5 className="fw-bold text-center">Task: </h5>
-                    <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: </span>{task && task.title}</div>
-                    <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Description: </span>{task && task.description}</div>
-                    <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">List: </span>{task && task.category}</div>
-                    <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Due date: </span>{task && task.date}</div>
-                    <MDBBtn className="me-1" onClick={() => startEditing(task)}>edit</MDBBtn>
-                    <MDBBtn onClick={() => deleteTask(task.id)}>delete</MDBBtn>
-                    </MDBContainer>
+                  <MDBContainer className="border p-3 rounded bg-light" key={task && task.id} style={{ textAlign: 'start' }}>
+                  <h5 className="fw-bold text-center">Task Details:</h5>
+                  <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+                    <span className="fw-bold text-muted">Title: </span>{task && task.title}
+                  </div>
+                  <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+                    <span className="fw-bold text-muted">Description: </span>{task && task.description}
+                  </div>
+                  <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+                    <span className="fw-bold text-muted">Category: </span>{task && task.category}
+                  </div>
+                  <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+                    <span className="fw-bold text-muted">Due date: </span>{task && task.date}
+                  </div>
+                  <MDBBtn className="me-1" color="info" onClick={() => startEditing(task)}>
+                  <MDBIcon fas icon='edit' size="lg" />
+                  </MDBBtn>
+                  <MDBBtn color="danger" onClick={() => deleteTask(task.id)}>
+                  <MDBIcon fas icon='trash' size='lg'/>
+                  </MDBBtn>
+                </MDBContainer>
                   </ModalOne>
             <Modal show={showModal} onClose={handleCloseModal}>
         <MDBContainer>
