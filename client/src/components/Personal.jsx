@@ -1,6 +1,6 @@
 import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGroup, MDBListGroupItem, MDBTextArea, MDBTypography } from 'mdb-react-ui-kit';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import axios from 'axios';
 import Modal from './Modal';
 import PropTypes from 'prop-types';
@@ -9,6 +9,7 @@ import ModalOne from './ModalOne';
 import Badge from './Badge';
 
 const Personal = ({isSidebarOpen}) => {
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
@@ -94,7 +95,7 @@ const Personal = ({isSidebarOpen}) => {
       const response = await axios.delete(`https://to-do-list-mu-green.vercel.app/task/${id}`)
       if (response.status === 200) {
         getTasks();
-        window.location.reload()
+        navigate(0)
       }
     }
   }
@@ -143,16 +144,18 @@ const Personal = ({isSidebarOpen}) => {
       setShowModal(false);
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
       event.preventDefault();
       const taskData = { title, description, category, date };
+    
       if (editingTask) {
-        updateTask(editingTask.id, taskData);
-        window.location.reload()
+        await updateTask(editingTask.id, taskData);
       } else {
-        addTask(taskData);
-        window.location.reload()
+        await addTask(taskData);
       }
+    
+      // After the task has been added or updated, you navigate
+      navigate(0);
     };
     
     const startEditing = (task) => {
@@ -211,16 +214,28 @@ const Personal = ({isSidebarOpen}) => {
           </MDBListGroupItem> 
           ))}
           <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
-            <MDBContainer style={{textAlign: 'start'}}>
-            <h5 className="fw-bold text-center">Task: </h5>
-            <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: </span>{task && task.title}</div>
-            <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Description: </span>{task && task.description}</div>
-            <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">List: </span>{task && task.category}</div>
-            <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Due date: </span>{task && task.date}</div>
-            <MDBBtn className="me-1" onClick={() => startEditing(task)}>edit</MDBBtn>
-            <MDBBtn onClick={() => deleteTask(task.id)}>delete</MDBBtn>
-            </MDBContainer>
-          </ModalOne>
+                          <MDBContainer className="border p-3 rounded bg-light" key={task && task.id} style={{ textAlign: 'start' }}>
+                          <h5 className="fw-bold text-center">Task Details:</h5>
+                          <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+                            <span className="fw-bold text-muted">Title: </span>{task && task.title}
+                          </div>
+                          <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+                            <span className="fw-bold text-muted">Description: </span>{task && task.description}
+                          </div>
+                          <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+                            <span className="fw-bold text-muted">Category: </span>{task && task.category}
+                          </div>
+                          <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+                            <span className="fw-bold text-muted">Due date: </span>{task && task.date}
+                          </div>
+                          <MDBBtn className="me-1" color="info" onClick={() => startEditing(task)}>
+                          <MDBIcon fas icon='edit' size="lg" />
+                          </MDBBtn>
+                          <MDBBtn color="danger" onClick={() => deleteTask(task.id)}>
+                          <MDBIcon fas icon='trash' size='lg'/>
+                          </MDBBtn>
+                        </MDBContainer>
+                          </ModalOne>
           <Modal show={showModal} onClose={handleCloseModal}>
             <MDBContainer>
             <h5 className="fw-bold">{editingTask ? 'Update Task' : 'Add New Task'}</h5>
@@ -237,7 +252,7 @@ const Personal = ({isSidebarOpen}) => {
             </select>
             <MDBInput required className='mb-4' type='date' id='form1Example8' label='date' name='date' value={date} onChange={(event) => setDate(event.target.value)} />
               <MDBBtn type='submit' block className='bg-secondary'>
-                {editingTask ? 'Update Task' : 'Add Task'}
+                {editingTask ? 'Save Changes' : 'Add Task'}
               </MDBBtn>
             </form>
             </MDBContainer>
