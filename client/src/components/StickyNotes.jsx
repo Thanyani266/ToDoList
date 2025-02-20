@@ -51,7 +51,7 @@ const StickyNotes = ({isSidebarOpen}) => {
   const getSingleNote = async (id) => {
     const response = await axios.get(`https://to-do-list-mu-green.vercel.app/note/${id}`)
     if (response.status === 200) {
-        setNote({...response.data[0]});
+        setNote({...response.data});
         setShowModalOne(true);
       }
   }
