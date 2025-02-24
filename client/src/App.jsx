@@ -1,16 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 //import DataList from './components/DataList';
 import Today from './components/Today';
 
 const App = () => {
   const [currentTask, setCurrentTask] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
-  useEffect(() => {
-    if (currentTask) {
-      setCurrentTask(currentTask); // Ensure fetch happens after currentTask is set
-    }
-  }, [currentTask]); // Only re-fetch when currentTask changes
   
 
   const handleEditTask = (task) => {
