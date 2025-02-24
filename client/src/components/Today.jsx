@@ -196,7 +196,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
       </ModalOne>
       <Modal show={showModal} onClose={handleCloseModal}>
         <MDBContainer>
-        <h5 className="fw-bold">{onEditTask ? 'Update Task' : 'Add New Task'}</h5>
+        <h5 className="fw-bold">{currentTask ? 'Update Task' : 'Add New Task'}</h5>
         <form onSubmit={handleSubmit}>
           <MDBInput required className='mb-4' type='text' id='form1Example4' label='Title' name='title' value={title} onChange={(event) => setTitle(event.target.value)} />
           <MDBTextArea className='mb-4' label="Description" id="textAreaExample" rows="{6}" name="description" value={description} onChange={(event) => setDescription(event.target.value)} />
