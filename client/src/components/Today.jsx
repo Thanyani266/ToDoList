@@ -67,8 +67,10 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
       e.preventDefault();
       const task = { title, description, category, date };
       if (currentTask) {
-        dispatch(updateTask({ ...currentTask, ...task }));
-        setCurrentTask(currentTask); // Reset current task after updating
+        dispatch(updateTask({ ...currentTask, ...task })).then(() => {
+          dispatch(fetchData());
+        });
+        setCurrentTask(null); // Reset current task after updating
       } else {
         dispatch(createTask(task));
       }
