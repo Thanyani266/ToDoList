@@ -30,9 +30,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
     }
   }, [status, dispatch]);
   
-  useEffect(() => {
-    dispatch(fetchData()); // Trigger when currentTask changes
-  }, [currentTask, dispatch]);
+  console.log(currentTask);
   
 
   const [list, setList] = useState([]);
