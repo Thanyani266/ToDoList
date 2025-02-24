@@ -208,7 +208,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask}) => {
     <MDBBtn className="w-100 text-start mt-5 bg-transparent border text-success" onClick={handleOpenModal}><MDBIcon fas icon="plus" className="me-2" />new task </MDBBtn>
     <MDBListGroup light style={{ minWidth: '22rem' }}>
     <ul>
-      {datai.map((item) => (
+      {todayTasks.map((item) => (
         <li key={item.id}>
           <h3>{item.title}</h3>
           <p>{item.description}</p>
