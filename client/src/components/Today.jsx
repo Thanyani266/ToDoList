@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { createTask, deleteTask, updateTask } from '../redux/dataSlice';
 import '../App.css'
 import { fetchData } from '../redux/dataSlice';
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ModalOne from "./ModalOne";
 import Badge from "./Badge";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,7 +14,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModal, setShowModal}) => {
   const [showModalOne, setShowModalOne] = useState(false);
-  const navigate = useNavigate();
 
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
@@ -65,7 +64,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
       if (currentTask) {
         dispatch(updateTask({ ...currentTask, ...task }));
         setCurrentTask(null); // Reset current task after updating
-        navigate(0)
+        window.location.reload();
       } else {
         dispatch(createTask(task));
       }
