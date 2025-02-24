@@ -3,7 +3,7 @@ import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGr
 import { useEffect, useState } from "react";
 import Modal from './Modal';
 import PropTypes from 'prop-types';
-import { createTask } from '../redux/dataSlice';
+import { createTask, deleteTask, updateTask } from '../redux/dataSlice';
 import '../App.css'
 import { fetchData } from '../redux/dataSlice';
 import { useParams } from "react-router-dom";
@@ -12,11 +12,9 @@ import Badge from "./Badge";
 import { useDispatch, useSelector } from "react-redux";
 
 
-const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask}) => {
-  const [tasks, setTasks] = useState([]);
-  const [editingTask, setEditingTask] = useState(null);
+const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModal, setShowModal}) => {
+  const [showModalOne, setShowModalOne] = useState(false)
 
-  const [data, setData] = useState([]);
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
     return saved ? JSON.parse(saved) : {};
@@ -57,7 +55,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask}) => {
       }
     }, [currentTask]);
   
-    const handleSubmity = (e) => {
+    const handleSubmit = (e) => {
       e.preventDefault();
       const task = { title, description, category, date };
       if (currentTask) {
@@ -70,6 +68,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask}) => {
       setDescription('');
       setCategory('');
       setDate('');
+      setShowModal(false);
     };
 
   const [task, setTask] = useState(null)
@@ -80,10 +79,6 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask}) => {
         getSingleTask(id)
     }
   }, [id])
-
-
-  const [showModal, setShowModal] = useState(false);
-  const [showModalOne, setShowModalOne] = useState(false);
 
   const handleDelete = (id) => {
     dispatch(deleteTask(id));
@@ -97,51 +92,10 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask}) => {
     return <div>Error loading data</div>;
   }
 
-  const updateTask = async (taskId, updatedData) => {
-    try {
-      const response = await axios.put(`https://to-do-list-mu-green.vercel.app/task/${taskId}`, updatedData);
-      if (response.status === 200) {
-        console.log('Task updated successfully:', response.data);
-        // Update the tasks list
-        setTasks(tasks.map(task => (task.id === taskId ? response.data : task)));
-        // Optionally reset form fields here
-        setTitle('');
-        setDescription('');
-        setCategory('');
-        setDate('');
-        setEditingTask(null);
-        setShowModal(false);
-      }
-    } catch (error) {
-      console.error('Error updating task:', error);
-    }
-  };
-  
-  
-  
-
-  const getTasks = async () => {
-    const response = await axios.get('https://to-do-list-mu-green.vercel.app/tasks')
-    if (response.status === 200) {
-      setData(response.data)
-    }
-  }
-
-  
-
   const getLists = async () => {
     const response = await axios.get('https://to-do-list-mu-green.vercel.app/lists')
     if (response.status === 200) {
       setList(response.data)
-    }
-  }
-
-  const deleteTask = async (id) => {
-    if(window.confirm("Are you sure you want to delete the task?")){
-      const response = await axios.delete(`https://to-do-list-mu-green.vercel.app/task/${id}`)
-      if (response.status === 200) {
-        getTasks();
-      }
     }
   }
 
@@ -169,22 +123,11 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask}) => {
       setDescription('');
       setCategory('');
       setDate('');
-      setEditingTask(null);
       setShowModal(true);
     };
   
     const handleCloseModal = () => {
       setShowModal(false);
-    };
-    
-    
-    const startEditing = (task) => {
-      setTitle(task.title);
-      setDescription(task.description);
-      setCategory(task.category);
-      setDate(task.date);
-      setEditingTask(task);
-      setShowModal(true);
     };
     
     const isToday = (someDate) => {
@@ -197,7 +140,6 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask}) => {
   
     const todayTasks = datai.filter(task => isToday(task.date));
 
-  console.log('data => ', data);
   console.log(todayTasks);
   
   return (
@@ -207,18 +149,6 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask}) => {
         </MDBTypography>
     <MDBBtn className="w-100 text-start mt-5 bg-transparent border text-success" onClick={handleOpenModal}><MDBIcon fas icon="plus" className="me-2" />new task </MDBBtn>
     <MDBListGroup light style={{ minWidth: '22rem' }}>
-    <ul>
-      {todayTasks.map((item) => (
-        <li key={item.id}>
-          <h3>{item.title}</h3>
-          <p>{item.description}</p>
-          <p><strong>Category:</strong> {item.category}</p>
-          <p><strong>Date:</strong> {item.date}</p>
-          <button onClick={() => onEditTask(item)}>Edit</button>
-          <button onClick={() => handleDelete(item.id)}>Delete</button>
-        </li>
-      ))}
-    </ul>
       {todayTasks && todayTasks.map(item => (
       <MDBListGroupItem className={`d-flex justify-content-between align-items-start rounded border border-2 mt-2 ${checkedItems[item.id] ? 'text-light bg-secondary bg-opacity-25' : ''}`} key={item.id}>
         <>
@@ -231,9 +161,9 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask}) => {
                 onChange={() => handleCheckboxChange(item.id)}
             /></div><Badge>{item.category}</Badge>
         </div>
-        <MDBBtn onClick={() => startEditing(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-info`}><MDBIcon fas icon='edit' size="lg" /></MDBBtn>
+        <MDBBtn onClick={() => onEditTask(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-info`}><MDBIcon fas icon='edit' size="lg" /></MDBBtn>
         <MDBBtn onClick={() => getSingleTask(item.id)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-secondary`}><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
-        <MDBBtn onClick={() => deleteTask(item.id)} className="me-1 rounded-pill btn-outline-danger">
+        <MDBBtn onClick={() => handleDelete(item.id)} className="me-1 rounded-pill btn-outline-danger">
           <MDBIcon fas icon='trash' size='lg'/>
         </MDBBtn></>
       </MDBListGroupItem>
@@ -253,7 +183,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask}) => {
       <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
         <span className="fw-bold text-muted">Due date: </span>{task && task.date}
       </div>
-      <MDBBtn className="me-1" color="info" onClick={() => startEditing(task)}>
+      <MDBBtn className="me-1" color="info" onClick={() => onEditTask(task)}>
       <MDBIcon fas icon='edit' size="lg" />
       </MDBBtn>
       <MDBBtn color="danger" onClick={() => deleteTask(task.id)}>
@@ -263,8 +193,8 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask}) => {
       </ModalOne>
       <Modal show={showModal} onClose={handleCloseModal}>
         <MDBContainer>
-        <h5 className="fw-bold">{editingTask ? 'Update Task' : 'Add New Task'}</h5>
-        <form onSubmit={handleSubmity}>
+        <h5 className="fw-bold">{onEditTask ? 'Update Task' : 'Add New Task'}</h5>
+        <form onSubmit={handleSubmit}>
           <MDBInput required className='mb-4' type='text' id='form1Example4' label='Title' name='title' value={title} onChange={(event) => setTitle(event.target.value)} />
           <MDBTextArea className='mb-4' label="Description" id="textAreaExample" rows="{6}" name="description" value={description} onChange={(event) => setDescription(event.target.value)} />
           <select className='form-select mb-4' value={category} onChange={(event) => setCategory(event.target.value)}>
@@ -291,7 +221,9 @@ Today.propTypes = {
   isSidebarOpen: PropTypes.bool,
   onEditTask: PropTypes.any,
   currentTask: PropTypes.any,
-  setCurrentTask: PropTypes.any
+  setCurrentTask: PropTypes.any,
+  showModal: PropTypes.any,
+  setShowModal: PropTypes.any
 };
 
 export default Today
