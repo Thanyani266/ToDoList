@@ -24,15 +24,11 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
   const data = useSelector((state) => state.data.items);
   const status = useSelector((state) => state.data.status);
 
-  /*useEffect(() => {
-    if (status === 'idle') {
+  useEffect(() => {
+    if (status === 'idle' || currentTask) {
       dispatch(fetchData());
     }
-  }, [status, dispatch]);*/
-
-  useEffect(() => {
-    dispatch(fetchData()); // Fetch data again when the component mounts to ensure it is always up-to-date
-  }, [dispatch, currentTask]);
+  }, [status, dispatch, currentTask]);
 
   const [list, setList] = useState([]);
 
