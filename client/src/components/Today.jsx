@@ -21,7 +21,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
   });
 
   const dispatch = useDispatch();
-  const datai = useSelector((state) => state.data.items);
+  const data = useSelector((state) => state.data.items);
   const status = useSelector((state) => state.data.status);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
 
   useEffect(() => {
     dispatch(fetchData()); // Fetch data again when the component mounts to ensure it is always up-to-date
-  }, [dispatch]);
+  }, [dispatch, currentTask]);
 
   const [list, setList] = useState([]);
 
@@ -142,7 +142,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
              dateToCompare.getFullYear() === today.getFullYear();
     };
   
-    const todayTasks = datai.filter(task => isToday(task.date));
+    const todayTasks = data.filter(task => isToday(task.date));
 
   console.log(todayTasks);
   
