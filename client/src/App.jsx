@@ -1,6 +1,7 @@
 import { useState } from 'react';
 //import DataList from './components/DataList';
 import Today from './components/Today';
+import NewTaskForm from './components/NewTaskForm';
 
 const App = () => {
   const [currentTask, setCurrentTask] = useState(null);
@@ -14,6 +15,7 @@ const App = () => {
   return (
     <div className="App">
       <h1>Task Manager</h1>
+      <NewTaskForm currentTask={currentTask} setCurrentTask={setCurrentTask} />
       <Today onEditTask={handleEditTask}  currentTask={currentTask} setCurrentTask={setCurrentTask} showModal={showModal} setShowModal={setShowModal}/>
     </div>
   );
