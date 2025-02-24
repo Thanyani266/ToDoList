@@ -12,8 +12,9 @@ import Badge from "./Badge";
 import { useDispatch, useSelector } from "react-redux";
 
 
-const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModal, setShowModal}) => {
+const Today = ({isSidebarOpen, onEditTask, showModal, setShowModal}) => {
   const [showModalOne, setShowModalOne] = useState(false);
+  const [currentTask, setCurrentTask] = useState(null);
 
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
@@ -108,7 +109,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
         setTask({...response.data});
         setShowModalOne(true);
       }
-  }
+    }
 
     const handleCheckboxChange = (id) => {
       setCheckedItems((prevState) => ({
@@ -223,8 +224,6 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
 Today.propTypes = {
   isSidebarOpen: PropTypes.bool,
   onEditTask: PropTypes.any,
-  currentTask: PropTypes.any,
-  setCurrentTask: PropTypes.any,
   showModal: PropTypes.any,
   setShowModal: PropTypes.any
 };

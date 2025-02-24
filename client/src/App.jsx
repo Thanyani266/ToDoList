@@ -3,19 +3,16 @@ import { useState } from 'react';
 import Today from './components/Today';
 
 const App = () => {
-  const [currentTask, setCurrentTask] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  
 
-  const handleEditTask = (task) => {
-    setCurrentTask(task);
+  const handleEditTask = () => {
     setShowModal(true)
   };
 
   return (
     <div className="App">
       <h1>Task Manager</h1>
-      <Today onEditTask={handleEditTask}  currentTask={currentTask} setCurrentTask={setCurrentTask} showModal={showModal} setShowModal={setShowModal}/>
+      <Today onEditTask={handleEditTask} showModal={showModal} setShowModal={setShowModal}/>
     </div>
   );
 };
