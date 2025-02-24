@@ -2,22 +2,22 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export const fetchData = createAsyncThunk('tasks/fetchData', async () => {
-  const response = await axios.get('https://json-server-data-5js7.onrender.com/tasks'); 
+  const response = await axios.get('https://to-do-list-mu-green.vercel.app/tasks'); 
   return response.data;
 });
 
 export const createTask = createAsyncThunk('tasks/createTask', async (newTask) => {
-  const response = await axios.post('https://json-server-data-5js7.onrender.com/task', newTask); 
+  const response = await axios.post('https://to-do-list-mu-green.vercel.app/task', newTask); 
   return response.data;
 });
   
 export const updateTask = createAsyncThunk('tasks/updateTask', async (updatedTask) => {
-  const response = await axios.put(`https://json-server-data-5js7.onrender.com/task/${updatedTask.id}`, updatedTask); 
+  const response = await axios.put(`https://to-do-list-mu-green.vercel.app/task/${updatedTask.id}`, updatedTask); 
   return response.data;
 });
 
 export const deleteTask = createAsyncThunk('tasks/deleteTask', async (taskId) => {
-  await axios.delete(`https://json-server-data-5js7.onrender.com/task/${taskId}`); // Replace with your Node.js API endpoint
+  await axios.delete(`https://to-do-list-mu-green.vercel.app/task/${taskId}`); // Replace with your Node.js API endpoint
   return taskId;
 });
 
