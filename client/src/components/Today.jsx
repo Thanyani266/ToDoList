@@ -25,10 +25,15 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
   const status = useSelector((state) => state.data.status);
 
   useEffect(() => {
-    if (status === 'idle' || currentTask) {
-      dispatch(fetchData());
+    if (status === 'idle') {
+      dispatch(fetchData()); // Trigger if status is 'idle'
     }
-  }, [status, dispatch, currentTask]);
+  }, [status, dispatch]);
+  
+  useEffect(() => {
+    dispatch(fetchData()); // Trigger when currentTask changes
+  }, [currentTask, dispatch]);
+  
 
   const [list, setList] = useState([]);
 
