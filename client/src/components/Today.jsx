@@ -64,7 +64,6 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
       if (currentTask) {
         dispatch(updateTask({ ...currentTask, ...task }));
         setCurrentTask(null); // Reset current task after updating
-        window.location.reload();
       } else {
         dispatch(createTask(task));
       }
