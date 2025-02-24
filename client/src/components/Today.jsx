@@ -30,6 +30,10 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
     }
   }, [status, dispatch]);
 
+  useEffect(() => {
+    dispatch(fetchData()); // Fetch data again when the component mounts to ensure it is always up-to-date
+  }, [dispatch]);
+
   const [list, setList] = useState([]);
 
   useEffect(() => {
