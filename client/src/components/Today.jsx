@@ -3,43 +3,98 @@ import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGr
 import { useEffect, useState } from "react";
 import Modal from './Modal';
 import PropTypes from 'prop-types';
+import { createTask } from '../redux/dataSlice';
 import '../App.css'
-import { useNavigate, useParams } from "react-router-dom";
+import { fetchData } from '../redux/dataSlice';
+import { useParams } from "react-router-dom";
 import ModalOne from "./ModalOne";
 import Badge from "./Badge";
+import { useDispatch, useSelector } from "react-redux";
 
 
-const Today = ({isSidebarOpen}) => {
-  const navigate = useNavigate()
+const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask}) => {
+  const [tasks, setTasks] = useState([]);
+  const [editingTask, setEditingTask] = useState(null);
+
   const [data, setData] = useState([]);
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
     return saved ? JSON.parse(saved) : {};
   });
 
-  const [tasks, setTasks] = useState([]);
-  const [editingTask, setEditingTask] = useState(null);
+  const dispatch = useDispatch();
+  const datai = useSelector((state) => state.data.items);
+  const status = useSelector((state) => state.data.status);
 
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [category, setCategory] = useState('')
-  const [date, setDate] = useState('')
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(fetchData());
+    }
+  }, [status, dispatch]);
 
-  const addTask = async (taskData) => {
-    try {
-      const response = await axios.post('https://to-do-list-mu-green.vercel.app/task', taskData);
-      if (response.status === 200) {
-        console.log('Task added successfully:', response.data);
-        // Optionally reset form fields here
+  const [list, setList] = useState([]);
+
+  useEffect(() => {
+    getLists();
+  }, [])
+
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [category, setCategory] = useState('');
+    const [date, setDate] = useState('');
+  
+    useEffect(() => {
+      if (currentTask) {
+        setTitle(currentTask.title);
+        setDescription(currentTask.description);
+        setCategory(currentTask.category);
+        setDate(currentTask.date);
+      } else {
         setTitle('');
         setDescription('');
         setCategory('');
         setDate('');
-        setShowModal(false);
       }
-    } catch (error) {
-      console.error('Error adding task:', error);
+    }, [currentTask]);
+  
+    const handleSubmity = (e) => {
+      e.preventDefault();
+      const task = { title, description, category, date };
+      if (currentTask) {
+        dispatch(updateTask({ ...currentTask, ...task }));
+        setCurrentTask(null); // Reset current task after updating
+      } else {
+        dispatch(createTask(task));
+      }
+      setTitle('');
+      setDescription('');
+      setCategory('');
+      setDate('');
+    };
+
+  const [task, setTask] = useState(null)
+ 
+  const {id} = useParams()
+  useEffect(() => {
+    if(id) {
+        getSingleTask(id)
     }
+  }, [id])
+
+
+  const [showModal, setShowModal] = useState(false);
+  const [showModalOne, setShowModalOne] = useState(false);
+
+  const handleDelete = (id) => {
+    dispatch(deleteTask(id));
+  };
+
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (status === 'failed') {
+    return <div>Error loading data</div>;
   }
 
   const updateTask = async (taskId, updatedData) => {
@@ -63,13 +118,7 @@ const Today = ({isSidebarOpen}) => {
   };
   
   
-  useEffect(() => {
-    getTasks();
-  }, [])
-
-  useEffect(() => {
-    localStorage.setItem("checkedItems", JSON.stringify(checkedItems));
-  }, [checkedItems]);
+  
 
   const getTasks = async () => {
     const response = await axios.get('https://to-do-list-mu-green.vercel.app/tasks')
@@ -78,11 +127,7 @@ const Today = ({isSidebarOpen}) => {
     }
   }
 
-  const [list, setList] = useState([]);
-
-  useEffect(() => {
-    getLists();
-  }, [])
+  
 
   const getLists = async () => {
     const response = await axios.get('https://to-do-list-mu-green.vercel.app/lists')
@@ -96,23 +141,9 @@ const Today = ({isSidebarOpen}) => {
       const response = await axios.delete(`https://to-do-list-mu-green.vercel.app/task/${id}`)
       if (response.status === 200) {
         getTasks();
-        navigate(0);
       }
     }
   }
-  
-  const [task, setTask] = useState(null)
- 
-  const {id} = useParams()
-  useEffect(() => {
-    if(id) {
-        getSingleTask(id)
-    }
-  }, [id])
-
-
-  const [showModal, setShowModal] = useState(false);
-  const [showModalOne, setShowModalOne] = useState(false);
 
   const getSingleTask = async (id) => {
     const response = await axios.get(`https://to-do-list-mu-green.vercel.app/task/${id}`)
@@ -145,20 +176,6 @@ const Today = ({isSidebarOpen}) => {
     const handleCloseModal = () => {
       setShowModal(false);
     };
-
-    const handleSubmit = async (event) => {
-      event.preventDefault();
-      const taskData = { title, description, category, date };
-    
-      if (editingTask) {
-        await updateTask(editingTask.id, taskData);
-      } else {
-        await addTask(taskData);
-      }
-    
-      // After the task has been added or updated, you navigate
-      navigate(0);
-    };
     
     
     const startEditing = (task) => {
@@ -178,7 +195,7 @@ const Today = ({isSidebarOpen}) => {
              dateToCompare.getFullYear() === today.getFullYear();
     };
   
-    const todayTasks = data.filter(task => isToday(task.date));
+    const todayTasks = datai.filter(task => isToday(task.date));
 
   console.log('data => ', data);
   console.log(todayTasks);
@@ -190,6 +207,18 @@ const Today = ({isSidebarOpen}) => {
         </MDBTypography>
     <MDBBtn className="w-100 text-start mt-5 bg-transparent border text-success" onClick={handleOpenModal}><MDBIcon fas icon="plus" className="me-2" />new task </MDBBtn>
     <MDBListGroup light style={{ minWidth: '22rem' }}>
+    <ul>
+      {datai.map((item) => (
+        <li key={item.id}>
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+          <p><strong>Category:</strong> {item.category}</p>
+          <p><strong>Date:</strong> {item.date}</p>
+          <button onClick={() => onEditTask(item)}>Edit</button>
+          <button onClick={() => handleDelete(item.id)}>Delete</button>
+        </li>
+      ))}
+    </ul>
       {todayTasks && todayTasks.map(item => (
       <MDBListGroupItem className={`d-flex justify-content-between align-items-start rounded border border-2 mt-2 ${checkedItems[item.id] ? 'text-light bg-secondary bg-opacity-25' : ''}`} key={item.id}>
         <>
@@ -235,7 +264,7 @@ const Today = ({isSidebarOpen}) => {
       <Modal show={showModal} onClose={handleCloseModal}>
         <MDBContainer>
         <h5 className="fw-bold">{editingTask ? 'Update Task' : 'Add New Task'}</h5>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmity}>
           <MDBInput required className='mb-4' type='text' id='form1Example4' label='Title' name='title' value={title} onChange={(event) => setTitle(event.target.value)} />
           <MDBTextArea className='mb-4' label="Description" id="textAreaExample" rows="{6}" name="description" value={description} onChange={(event) => setDescription(event.target.value)} />
           <select className='form-select mb-4' value={category} onChange={(event) => setCategory(event.target.value)}>
@@ -248,7 +277,7 @@ const Today = ({isSidebarOpen}) => {
         </select>
         <MDBInput required className='mb-4' type='date' id='form1Example8' label='date' name='date' value={date} onChange={(event) => setDate(event.target.value)} />
           <MDBBtn type='submit' block className='bg-secondary'>
-            {editingTask ? 'Save Changes' : 'Add Task'}
+            {currentTask ? 'Save Changes' : 'Add Task'}
           </MDBBtn>
         </form>
         </MDBContainer>
@@ -259,7 +288,10 @@ const Today = ({isSidebarOpen}) => {
 }
 
 Today.propTypes = {
-  isSidebarOpen: PropTypes.bool
+  isSidebarOpen: PropTypes.bool,
+  onEditTask: PropTypes.any,
+  currentTask: PropTypes.any,
+  setCurrentTask: PropTypes.any
 };
 
 export default Today

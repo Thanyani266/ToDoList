@@ -1,4 +1,26 @@
-import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
+import { useState } from 'react';
+//import DataList from './components/DataList';
+import Today from './components/Today';
+
+const App = () => {
+  const [currentTask, setCurrentTask] = useState(null);
+
+  const handleEditTask = (task) => {
+    setCurrentTask(task);
+  };
+
+  return (
+    <div className="App">
+      <h1>Task Manager</h1>
+      <Today onEditTask={handleEditTask}  currentTask={currentTask} setCurrentTask={setCurrentTask}/>
+    </div>
+  );
+};
+
+export default App;
+
+
+/*import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
 import './App.css';
 
 
@@ -42,4 +64,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default App; */
