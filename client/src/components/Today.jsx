@@ -1,12 +1,12 @@
 import axios from "axios";
 import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGroup, MDBListGroupItem, MDBTextArea, MDBTypography } from "mdb-react-ui-kit"
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react-router-dom";
 import Modal from './Modal';
 import PropTypes from 'prop-types';
-import { createTask, deleteTask, updateTask } from '../redux/dataSlice';
+import { createTask, deleteTask, getSingleTask, updateTask } from '../redux/dataSlice';
 import '../App.css'
 import { fetchData } from '../redux/dataSlice';
-import { useParams } from "react-router-dom";
+import {useParams} from 'react'
 import ModalOne from "./ModalOne";
 import Badge from "./Badge";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,20 +20,28 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
     return saved ? JSON.parse(saved) : {};
   });
 
+  const { taskId } = useParams();  // Get taskId from URL params
+
   const dispatch = useDispatch();
-  const data = useSelector((state) => state.data.items);
+  const tasks = useSelector((state) => state.data.items);
+  const selectedTask = useSelector((state) => state.data.selectedTask);
   const status = useSelector((state) => state.data.status);
 
-  // To refresh the data, you can dispatch fetchData again
-  /*const refreshData = () => {
-    dispatch(fetchData()); // This will re-fetch the data from the API
-  };*/
+  useEffect(() => {
+    if (taskId) {
+      dispatch(getSingleTask(taskId));  // Fetch the single task
+    }
+  }, [taskId, dispatch]);
 
   useEffect(() => {
     if (status === 'idle') {
       dispatch(fetchData()); // Trigger if status is 'idle'
     }
   }, [status, dispatch]);
+
+  const handleGetSingleTask = (taskId) => {
+    dispatch(getSingleTask(taskId));
+  };
   
   console.log(currentTask);
   
@@ -81,15 +89,6 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
       setShowModal(false);
     };
 
-  const [task, setTask] = useState(null)
- 
-  const {id} = useParams()
-  useEffect(() => {
-    if(id) {
-        getSingleTask(id)
-    }
-  }, [id])
-
   const handleDelete = (id) => {
     dispatch(deleteTask(id));
   };
@@ -107,14 +106,6 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
     if (response.status === 200) {
       setList(response.data)
     }
-  }
-
-  const getSingleTask = async (id) => {
-    const response = await axios.get(`https://to-do-list-mu-green.vercel.app/task/${id}`)
-    if (response.status === 200) {
-        setTask({...response.data});
-        setShowModalOne(true);
-      }
   }
 
     const handleCheckboxChange = (id) => {
@@ -148,7 +139,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
              dateToCompare.getFullYear() === today.getFullYear();
     };
   
-    const todayTasks = data.filter(task => isToday(task.date));
+    const todayTasks = tasks.filter(task => isToday(task.date));
 
   console.log(todayTasks);
   
@@ -172,34 +163,35 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
             /></div><Badge>{item.category}</Badge>
         </div>
         <MDBBtn onClick={() => onEditTask(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-info`}><MDBIcon fas icon='edit' size="lg" /></MDBBtn>
-        <MDBBtn onClick={() => getSingleTask(item.id)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-secondary`}><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
+        <MDBBtn onClick={() => handleGetSingleTask(item.id)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-secondary`}><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
         <MDBBtn onClick={() => handleDelete(item.id)} className="me-1 rounded-pill btn-outline-danger">
           <MDBIcon fas icon='trash' size='lg'/>
         </MDBBtn></>
       </MDBListGroupItem>
       ))}
       <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
-      <MDBContainer className="border p-3 rounded bg-light" key={task && task.id} style={{ textAlign: 'start' }}>
+      { selectedTask ? (
+        <MDBContainer className="border p-3 rounded bg-light" key={selectedTask.id} style={{ textAlign: 'start' }}>
       <h5 className="fw-bold text-center">Task Details:</h5>
       <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
-        <span className="fw-bold text-muted">Title: </span>{task && task.title}
+        <span className="fw-bold text-muted">Title: </span>{selectedTask.title}
       </div>
       <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
-        <span className="fw-bold text-muted">Description: </span>{task && task.description}
+        <span className="fw-bold text-muted">Description: </span>{selectedTask.description}
       </div>
       <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
-        <span className="fw-bold text-muted">Category: </span>{task && task.category}
+        <span className="fw-bold text-muted">Category: </span>{selectedTask.category}
       </div>
       <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
-        <span className="fw-bold text-muted">Due date: </span>{task && task.date}
+        <span className="fw-bold text-muted">Due date: </span>{selectedTask.date}
       </div>
-      <MDBBtn className="me-1" color="info" onClick={() => onEditTask(task)}>
+      <MDBBtn className="me-1" color="info" onClick={() => onEditTask(selectedTask)}>
       <MDBIcon fas icon='edit' size="lg" />
       </MDBBtn>
-      <MDBBtn color="danger" onClick={() => deleteTask(task.id)}>
+      <MDBBtn color="danger" onClick={() => deleteTask(selectedTask.id)}>
       <MDBIcon fas icon='trash' size='lg'/>
       </MDBBtn>
-    </MDBContainer>
+    </MDBContainer>) : (<div>No task found</div>)}
       </ModalOne>
       <Modal show={showModal} onClose={handleCloseModal}>
         <MDBContainer>
