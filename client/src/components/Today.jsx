@@ -12,9 +12,8 @@ import Badge from "./Badge";
 import { useDispatch, useSelector } from "react-redux";
 
 
-const Today = ({isSidebarOpen, onEditTask, showModal, setShowModal}) => {
+const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModal, setShowModal}) => {
   const [showModalOne, setShowModalOne] = useState(false);
-  const [currentTask, setCurrentTask] = useState(null);
 
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
@@ -24,6 +23,11 @@ const Today = ({isSidebarOpen, onEditTask, showModal, setShowModal}) => {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.data.items);
   const status = useSelector((state) => state.data.status);
+
+  // To refresh the data, you can dispatch fetchData again
+  const refreshData = () => {
+    dispatch(fetchData()); // This will re-fetch the data from the API
+  };
 
   useEffect(() => {
     if (status === 'idle') {
@@ -65,6 +69,7 @@ const Today = ({isSidebarOpen, onEditTask, showModal, setShowModal}) => {
       if (currentTask) {
         dispatch(updateTask({ ...currentTask, ...task }));
         setCurrentTask(null); // Reset current task after updating
+        refreshData();
       } else {
         dispatch(createTask(task));
       }
@@ -109,7 +114,7 @@ const Today = ({isSidebarOpen, onEditTask, showModal, setShowModal}) => {
         setTask({...response.data});
         setShowModalOne(true);
       }
-    }
+  }
 
     const handleCheckboxChange = (id) => {
       setCheckedItems((prevState) => ({
@@ -224,6 +229,8 @@ const Today = ({isSidebarOpen, onEditTask, showModal, setShowModal}) => {
 Today.propTypes = {
   isSidebarOpen: PropTypes.bool,
   onEditTask: PropTypes.any,
+  currentTask: PropTypes.any,
+  setCurrentTask: PropTypes.any,
   showModal: PropTypes.any,
   setShowModal: PropTypes.any
 };
