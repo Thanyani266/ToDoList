@@ -25,9 +25,9 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
   const status = useSelector((state) => state.data.status);
 
   // To refresh the data, you can dispatch fetchData again
-  const refreshData = () => {
+  /*const refreshData = () => {
     dispatch(fetchData()); // This will re-fetch the data from the API
-  };
+  };*/
 
   useEffect(() => {
     if (status === 'idle') {
@@ -68,8 +68,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
       const task = { title, description, category, date };
       if (currentTask) {
         dispatch(updateTask({ ...currentTask, ...task }));
-        setCurrentTask(null); // Reset current task after updating
-        refreshData();
+        setCurrentTask(currentTask); // Reset current task after updating
       } else {
         dispatch(createTask(task));
       }
