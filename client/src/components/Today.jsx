@@ -77,7 +77,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
       if (currentTask) {
         dispatch(updateTask({ ...currentTask, ...task })).then(() => {
           dispatch(fetchData());
-          handleGetSingleTask(taskId);
+          dispatch(getSingleTask(currentTask.id));
         });
         setCurrentTask(null); // Reset current task after updating
       } else {
@@ -88,7 +88,6 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
       setCategory('');
       setDate('');
       setShowModal(false);
-      handleCloseModalOne();
     };
 
   const handleDelete = (id) => {
