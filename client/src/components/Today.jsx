@@ -78,6 +78,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
         dispatch(updateTask({ ...currentTask, ...task })).then(() => {
           dispatch(fetchData());
         });
+        handleCloseModalOne();
         setCurrentTask(null); // Reset current task after updating
       } else {
         dispatch(createTask(task));
@@ -188,7 +189,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
       <MDBBtn className="me-1" color="info" onClick={() => onEditTask(selectedTask)}>
       <MDBIcon fas icon='edit' size="lg" />
       </MDBBtn>
-      <MDBBtn color="danger" onClick={() => deleteTask(selectedTask.id)}>
+      <MDBBtn color="danger" onClick={() => handleDelete(selectedTask.id)}>
       <MDBIcon fas icon='trash' size='lg'/>
       </MDBBtn>
     </MDBContainer>) : (<div>No task found</div>)}
