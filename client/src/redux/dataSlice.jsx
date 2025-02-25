@@ -43,10 +43,6 @@ export const getSingleTask = createAsyncThunk('tasks/getSingleTask', async (task
         .addCase(fetchData.rejected, (state) => {
           state.status = 'failed';
         })
-        .addCase(fetchData.pending, (state, action) => {
-          state.items = action.payload;
-          state.status = 'loading';
-        })
         .addCase(createTask.fulfilled, (state, action) => {
           state.items.push(action.payload);
         })
