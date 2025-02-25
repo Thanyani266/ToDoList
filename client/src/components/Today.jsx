@@ -94,7 +94,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
 
   const handleDelete = (id) => {
     dispatch(deleteTask(id));
-    setShowModalOne(false)
+    setShowModalOne(false);
   };
 
   if (status === 'loading') {
@@ -154,7 +154,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
         </MDBTypography>
     <MDBBtn className="w-100 text-start mt-5 bg-transparent border text-success" onClick={handleOpenModal}><MDBIcon fas icon="plus" className="me-2" />new task </MDBBtn>
     <MDBListGroup light style={{ minWidth: '22rem' }}>
-      {todayTasks && todayTasks.map(item => (
+      {todayTasks.length >= 1 ? todayTasks.map(item => (
       <MDBListGroupItem className={`d-flex justify-content-between align-items-start rounded border border-2 mt-2 ${checkedItems[item.id] ? 'text-light bg-secondary bg-opacity-25' : ''}`} key={item.id}>
         <>
         <div className='ms-2 me-auto'>
@@ -172,7 +172,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
           <MDBIcon fas icon='trash' size='lg'/>
         </MDBBtn></>
       </MDBListGroupItem>
-      ))}
+      )) : <div>No task(s) for today</div>}
       <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
       { selectedTask ? (
         <MDBContainer className="border p-3 rounded bg-light" key={selectedTask.id} style={{ textAlign: 'start' }}>
