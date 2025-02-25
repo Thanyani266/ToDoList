@@ -41,6 +41,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
 
   const handleGetSingleTask = (taskId) => {
     dispatch(getSingleTask(taskId));
+    setShowModalOne(true);
   };
   
   console.log(currentTask);
