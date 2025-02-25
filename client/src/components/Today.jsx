@@ -150,7 +150,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
   return (
     <MDBCol className={`${isSidebarOpen ? 'content-shifted': 'content'}`}>
     <MDBTypography tag='span' className="fw-bold display-6 py-5">
-            Today <MDBTypography tag='span' className="float-end ms-auto border bg-secondary px-2 text-warning rounded">{todayTasks.length}</MDBTypography>
+            Today <MDBTypography tag='span' className="float-end ms-auto border bg-secondary bg-opacity-25 px-2 text-warning rounded">{todayTasks.length}</MDBTypography>
         </MDBTypography>
     <MDBBtn className="w-100 text-start mt-5 bg-transparent border text-success" onClick={handleOpenModal}><MDBIcon fas icon="plus" className="me-2" />new task </MDBBtn>
     <MDBListGroup light style={{ minWidth: '22rem' }}>
