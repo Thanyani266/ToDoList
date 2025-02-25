@@ -77,7 +77,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
       if (currentTask) {
         dispatch(updateTask({ ...currentTask, ...task })).then(() => {
           dispatch(getSingleTask(currentTask.id));
-          console.log(dispatch(getSingleTask(currentTask.id)))
+          console.log(`jimba: ${dispatch(getSingleTask(currentTask.id))}`)
           setShowModalOne(false);
           dispatch(fetchData());
         });
