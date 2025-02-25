@@ -1,12 +1,12 @@
 import axios from "axios";
 import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGroup, MDBListGroupItem, MDBTextArea, MDBTypography } from "mdb-react-ui-kit"
-import { useEffect, useState } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Modal from './Modal';
 import PropTypes from 'prop-types';
 import { createTask, deleteTask, getSingleTask, updateTask } from '../redux/dataSlice';
 import '../App.css'
 import { fetchData } from '../redux/dataSlice';
-import {useParams} from 'react'
+import {useParams} from 'react-router-dom'
 import ModalOne from "./ModalOne";
 import Badge from "./Badge";
 import { useDispatch, useSelector } from "react-redux";
@@ -211,7 +211,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
           ))}
         </select>
         <MDBInput required className='mb-4' type='date' id='form1Example8' label='date' name='date' value={date} onChange={(event) => setDate(event.target.value)} />
-          <MDBBtn type='submit' block className='bg-success'>
+          <MDBBtn type='submit' block className='bg-secondary'>
             {currentTask ? 'Save Changes' : 'Add Task'}
           </MDBBtn>
         </form>
