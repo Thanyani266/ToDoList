@@ -76,6 +76,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
       const task = { title, description, category, date };
       if (currentTask) {
         dispatch(updateTask({ ...currentTask, ...task })).then(() => {
+          setShowModalOne(false);
           dispatch(getSingleTask(currentTask.id));
           dispatch(fetchData());
         });
