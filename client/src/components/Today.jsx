@@ -88,6 +88,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
       setCategory('');
       setDate('');
       setShowModal(false);
+      handleCloseModalOne();
     };
 
   const handleDelete = (id) => {
