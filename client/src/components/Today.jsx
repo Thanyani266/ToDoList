@@ -172,7 +172,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
           <MDBIcon fas icon='trash' size='lg'/>
         </MDBBtn></>
       </MDBListGroupItem>
-      )) : <MDBListGroupItem className="text-center fw-bold text-warning bg-secondary bg-opacicity-25 my-auto">No task(s) for today</MDBListGroupItem>}
+      )) : <MDBListGroupItem className="text-center fw-bold text-warning bg-secondary bg-opacity-25 mt-5">No task(s) for today</MDBListGroupItem>}
       <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
       { selectedTask ? (
         <MDBContainer className="border p-3 rounded bg-light" key={selectedTask.id} style={{ textAlign: 'start' }}>
