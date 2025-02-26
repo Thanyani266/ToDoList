@@ -1,81 +1,54 @@
 import { MDBBtn, MDBCheckbox, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBListGroup, MDBListGroupItem, MDBTextArea, MDBTypography } from 'mdb-react-ui-kit';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
 import axios from 'axios';
 import Modal from './Modal';
 import PropTypes from 'prop-types';
+import { createTask, deleteTask, getSingleTask, updateTask } from '../redux/dataSlice';
 import moment from 'moment';
 import ModalOne from './ModalOne';
+import { fetchData } from '../redux/dataSlice';
+import {useParams} from 'react-router-dom'
 import Badge from './Badge';
+import { useDispatch, useSelector } from "react-redux";
 
-const Personal = ({isSidebarOpen}) => {
-  const navigate = useNavigate();
-  const [data, setData] = useState([]);
+const Personal = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModal, setShowModal}) => {
+  const [showModalOne, setShowModalOne] = useState(false);
+
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
     return saved ? JSON.parse(saved) : {};
   });
 
-  const [tasks, setTasks] = useState([]);
-  const [editingTask, setEditingTask] = useState(null);
-
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [category, setCategory] = useState('')
-  const [date, setDate] = useState('')
-
-  const addTask = async (taskData) => {
-    try {
-      const response = await axios.post('https://to-do-list-mu-green.vercel.app/task', taskData);
-      if (response.status === 200) {
-        console.log('Task added successfully:', response.data);
-        // Optionally reset form fields here
-        setTitle('');
-        setDescription('');
-        setCategory('');
-        setDate('');
-        setShowModal(false);
-      }
-    } catch (error) {
-      console.error('Error adding task:', error);
-    }
-  }
-
-  const updateTask = async (taskId, updatedData) => {
-    try {
-      const response = await axios.put(`https://to-do-list-mu-green.vercel.app/task/${taskId}`, updatedData);
-      if (response.status === 200) {
-        console.log('Task updated successfully:', response.data);
-        // Update the tasks list
-        setTasks(tasks.map(task => (task.id === taskId ? response.data : task)));
-        // Optionally reset form fields here
-        setTitle('');
-        setDescription('');
-        setCategory('');
-        setDate('');
-        setEditingTask(null);
-        setShowModal(false);
-      }
-    } catch (error) {
-      console.error('Error updating task:', error);
-    }
-  };
-  
-  
-  useEffect(() => {
-    getTasks();
-  }, [])
-
   useEffect(() => {
     localStorage.setItem("checkedItems", JSON.stringify(checkedItems));
   }, [checkedItems]);
 
-  const getTasks = async () => {
-    const response = await axios.get('https://to-do-list-mu-green.vercel.app/tasks')
-    if (response.status === 200) {
-      setData(response.data)
+  const { taskId } = useParams();  // Get taskId from URL params
+
+  const dispatch = useDispatch();
+  const tasks = useSelector((state) => state.data.items);
+  const selectedTask = useSelector((state) => state.data.selectedTask);
+  const status = useSelector((state) => state.data.status);
+
+  useEffect(() => {
+    if (taskId) {
+      dispatch(getSingleTask(taskId));  // Fetch the single task
     }
-  }
+  }, [taskId, dispatch]);
+
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(fetchData()); // Trigger if status is 'idle'
+    }
+  }, [status, dispatch]);
+
+  const handleGetSingleTask = (taskId) => {
+    dispatch(getSingleTask(taskId));
+    setShowModalOne(true);
+  };
+  
+  console.log(currentTask);
+  
 
   const [list, setList] = useState([]);
 
@@ -83,41 +56,63 @@ const Personal = ({isSidebarOpen}) => {
     getLists();
   }, [])
 
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [category, setCategory] = useState('');
+    const [date, setDate] = useState('');
+  
+    useEffect(() => {
+      if (currentTask) {
+        setTitle(currentTask.title);
+        setDescription(currentTask.description);
+        setCategory(currentTask.category);
+        setDate(currentTask.date);
+      } else {
+        setTitle('');
+        setDescription('');
+        setCategory('');
+        setDate('');
+      }
+    }, [currentTask]);
+  
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      const task = { title, description, category, date };
+      if (currentTask) {
+        dispatch(updateTask({ ...currentTask, ...task })).then(() => {
+          dispatch(getSingleTask(currentTask.id));
+          setShowModalOne(false);
+          dispatch(fetchData());
+        });
+        setCurrentTask(null); // Reset current task after updating
+      } else {
+        dispatch(createTask(task));
+      }
+      setTitle('');
+      setDescription('');
+      setCategory('');
+      setDate('');
+      setShowModal(false);
+    };
+
+  const handleDelete = (id) => {
+    dispatch(deleteTask(id));
+    setShowModalOne(false);
+  };
+
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (status === 'failed') {
+    return <div>Error loading data</div>;
+  }
+
   const getLists = async () => {
     const response = await axios.get('https://to-do-list-mu-green.vercel.app/lists')
     if (response.status === 200) {
       setList(response.data)
     }
-  }
-
-  const deleteTask = async (id) => {
-    if(window.confirm("Are you sure you want to delete the task?")){
-      const response = await axios.delete(`https://to-do-list-mu-green.vercel.app/task/${id}`)
-      if (response.status === 200) {
-        getTasks();
-        navigate(0)
-      }
-    }
-  }
-  
-  const [task, setTask] = useState(null)
- 
-  const {id} = useParams()
-  useEffect(() => {
-    if(id) {
-        getSingleTask(id)
-    }
-  }, [id])
-
-  const [showModal, setShowModal] = useState(false);
-  const [showModalOne, setShowModalOne] = useState(false);
-
-  const getSingleTask = async (id) => {
-    const response = await axios.get(`https://to-do-list-mu-green.vercel.app/task/${id}`)
-    if (response.status === 200) {
-        setTask({...response.data[0]});
-        setShowModalOne(true);
-      }
   }
 
     const handleCheckboxChange = (id) => {
@@ -136,38 +131,14 @@ const Personal = ({isSidebarOpen}) => {
       setDescription('');
       setCategory('');
       setDate('');
-      setEditingTask(null);
       setShowModal(true);
     };
   
     const handleCloseModal = () => {
       setShowModal(false);
     };
-
-    const handleSubmit = async (event) => {
-      event.preventDefault();
-      const taskData = { title, description, category, date };
     
-      if (editingTask) {
-        await updateTask(editingTask.id, taskData);
-      } else {
-        await addTask(taskData);
-      }
-    
-      // After the task has been added or updated, you navigate
-      navigate(0);
-    };
-    
-    const startEditing = (task) => {
-      setTitle(task.title);
-      setDescription(task.description);
-      setCategory(task.category);
-      setDate(task.date);
-      setEditingTask(task);
-      setShowModal(true);
-    };
-    
-    const personalData = data.filter(task => {
+    const personalData = tasks.filter(task => {
         const taskDate = new Date(task.date);
         const today = new Date();
 
@@ -179,18 +150,18 @@ const Personal = ({isSidebarOpen}) => {
 
     const personalTasks = personalData.filter(task => task.category === 'Personal');
 
-  console.log('data => ', data);
+  console.log('data => ', tasks);
   console.log(personalTasks);
     
 
     return (
         <MDBCol className={`${isSidebarOpen ? 'content-shifted': 'content'}`}>
         <MDBTypography tag='span' className="fw-bold display-6 py-5">
-                Personal <MDBTypography tag='span' className="float-end ms-auto border bg-secondary px-2 text-light rounded">{personalTasks.length}</MDBTypography>
+                Personal <MDBTypography tag='span' className="float-end ms-auto border bg-secondary bg-opacity-25 px-2 text-warning rounded">{personalTasks.length}</MDBTypography>
             </MDBTypography>
-        <MDBBtn className="w-100 text-start mt-5 bg-transparent border text-success" onClick={handleOpenModal}><MDBIcon fas icon="plus" className="me-2" /> Add new task </MDBBtn>
+        <MDBBtn className="w-100 text-start mt-5 bg-transparent border text-success" onClick={handleOpenModal}><MDBIcon fas icon="plus" className="me-2" /> new task </MDBBtn>
         <MDBListGroup light style={{ minWidth: '22rem' }}>
-          {personalTasks && personalTasks.map(item => (
+          {personalTasks.length >= 1 ? personalTasks.map(item => (
             
             <MDBListGroupItem className={`d-flex justify-content-between align-items-start rounded border border-2 mt-2 ${checkedItems[item.id] ? 'text-light bg-secondary bg-opacity-25' : ''}`} key={item.id}>
             <div className='ms-2 me-auto'>
@@ -206,63 +177,69 @@ const Personal = ({isSidebarOpen}) => {
                   <span className={`${checkedItems[item.id] ? 'text-decoration-line-through' : ''} fst-italic text-warning fw-bold ms-5`}>{moment(item.date).calendar().substring(0, moment(item.date).calendar().length-12)}</span>
                 </div>
             </div>
-            <MDBBtn onClick={() => startEditing(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-info`}><MDBIcon fas icon='edit' size="lg" /></MDBBtn>
-            <MDBBtn onClick={() => getSingleTask(item.id)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-secondary`}><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
-            <MDBBtn onClick={() => deleteTask(item.id)} className="me-1 rounded-pill btn-outline-danger">
+            <MDBBtn onClick={() => onEditTask(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-info`}><MDBIcon fas icon='edit' size="lg" /></MDBBtn>
+            <MDBBtn onClick={() => handleGetSingleTask(item.id)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-secondary`}><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
+            <MDBBtn onClick={() => handleDelete(item.id)} className="me-1 rounded-pill btn-outline-danger">
               <MDBIcon fas icon='trash' size='lg'/>
             </MDBBtn>
           </MDBListGroupItem> 
-          ))}
+          )) : <MDBListGroupItem className="text-center fw-bold text-warning bg-secondary bg-opacity-25 mt-5">No Personal task(s)</MDBListGroupItem>}
           <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
-                          <MDBContainer className="border p-3 rounded bg-light" key={task && task.id} style={{ textAlign: 'start' }}>
-                          <h5 className="fw-bold text-center">Task Details:</h5>
-                          <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
-                            <span className="fw-bold text-muted">Title: </span>{task && task.title}
-                          </div>
-                          <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
-                            <span className="fw-bold text-muted">Description: </span>{task && task.description}
-                          </div>
-                          <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
-                            <span className="fw-bold text-muted">Category: </span>{task && task.category}
-                          </div>
-                          <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
-                            <span className="fw-bold text-muted">Due date: </span>{task && task.date}
-                          </div>
-                          <MDBBtn className="me-1" color="info" onClick={() => startEditing(task)}>
-                          <MDBIcon fas icon='edit' size="lg" />
-                          </MDBBtn>
-                          <MDBBtn color="danger" onClick={() => deleteTask(task.id)}>
-                          <MDBIcon fas icon='trash' size='lg'/>
-                          </MDBBtn>
-                        </MDBContainer>
-                          </ModalOne>
-          <Modal show={showModal} onClose={handleCloseModal}>
-            <MDBContainer>
-            <h5 className="fw-bold">{editingTask ? 'Update Task' : 'Add New Task'}</h5>
-            <form onSubmit={handleSubmit}>
-              <MDBInput required className='mb-4' type='text' id='form1Example4' label='Title' name='title' value={title} onChange={(event) => setTitle(event.target.value)} />
-              <MDBTextArea className='mb-4' label="Description" id="textAreaExample" rows="{6}" name="description" value={description} onChange={(event) => setDescription(event.target.value)} />
-              <select className='form-select mb-4' value={category} onChange={(event) => setCategory(event.target.value)}>
-              <option>Select Category</option>
-              {list && list.map(item => (
-                <option value={item.option} key={item.id}>
-                  {item.option}
-                </option>
-              ))}
-            </select>
-            <MDBInput required className='mb-4' type='date' id='form1Example8' label='date' name='date' value={date} onChange={(event) => setDate(event.target.value)} />
-              <MDBBtn type='submit' block className='bg-secondary'>
-                {editingTask ? 'Save Changes' : 'Add Task'}
-              </MDBBtn>
-            </form>
-            </MDBContainer>
-          </Modal>
+      { selectedTask ? (
+        <MDBContainer className="border p-3 rounded bg-light" key={selectedTask.id} style={{ textAlign: 'start' }}>
+      <h5 className="fw-bold text-center">Task Details:</h5>
+      <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+        <span className="fw-bold text-muted">Title: </span>{selectedTask.title}
+      </div>
+      <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+        <span className="fw-bold text-muted">Description: </span>{selectedTask.description}
+      </div>
+      <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+        <span className="fw-bold text-muted">Category: </span>{selectedTask.category}
+      </div>
+      <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
+        <span className="fw-bold text-muted">Due date: </span>{selectedTask.date}
+      </div>
+      <MDBBtn className="me-1" color="info" onClick={() => onEditTask(selectedTask)}>
+      <MDBIcon fas icon='edit' size="lg" />
+      </MDBBtn>
+      <MDBBtn color="danger" onClick={() => handleDelete(selectedTask.id)}>
+      <MDBIcon fas icon='trash' size='lg'/>
+      </MDBBtn>
+    </MDBContainer>) : (<div>No task found</div>)}
+      </ModalOne>
+      <Modal show={showModal} onClose={handleCloseModal}>
+        <MDBContainer>
+        <h5 className="fw-bold">{currentTask ? 'Update Task' : 'Add New Task'}</h5>
+        <form onSubmit={handleSubmit}>
+          <MDBInput required className='mb-4' type='text' id='form1Example4' label='Title' name='title' value={title} onChange={(event) => setTitle(event.target.value)} />
+          <MDBTextArea className='mb-4' label="Description" id="textAreaExample" rows="{6}" name="description" value={description} onChange={(event) => setDescription(event.target.value)} />
+          <select className='form-select mb-4' value={category} onChange={(event) => setCategory(event.target.value)}>
+          <option>Select Category</option>
+          {list && list.map(item => (
+            <option value={item.option} key={item.id}>
+              {item.option}
+            </option>
+          ))}
+        </select>
+        <MDBInput required className='mb-4' type='date' id='form1Example8' label='date' name='date' value={date} onChange={(event) => setDate(event.target.value)} />
+          <MDBBtn type='submit' block className='bg-secondary'>
+            {currentTask ? 'Save Changes' : 'Add Task'}
+          </MDBBtn>
+        </form>
+        </MDBContainer>
+      </Modal>
         </MDBListGroup> 
         </MDBCol>
 )}
 
 Personal.propTypes = {
-  isSidebarOpen: PropTypes.bool
+  isSidebarOpen: PropTypes.bool,
+  onEditTask: PropTypes.any,
+  currentTask: PropTypes.any,
+  setCurrentTask: PropTypes.any,
+  showModal: PropTypes.any,
+  setShowModal: PropTypes.any
 };
 
 export default Personal

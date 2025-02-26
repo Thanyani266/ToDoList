@@ -1,28 +1,4 @@
-import { useState } from 'react';
-//import DataList from './components/DataList';
-import Today from './components/Today';
-
-const App = () => {
-  const [currentTask, setCurrentTask] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-
-  const handleEditTask = (task) => {
-    setCurrentTask(task);
-    setShowModal(true)
-  };
-
-  return (
-    <div className="App">
-      <h1>Task Manager</h1>
-      <Today onEditTask={handleEditTask}  currentTask={currentTask} setCurrentTask={setCurrentTask} showModal={showModal} setShowModal={setShowModal}/>
-    </div>
-  );
-};
-
-export default App;
-
-
-/*import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
+import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
 import './App.css';
 
 
@@ -35,15 +11,21 @@ import StickyNotes from './components/StickyNotes';
 import Personal from './components/Personal';
 import Work from './components/Work';
 import { useState } from 'react';
-import TaskView from './components/TaskView';
 
 const App = () => {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [currentTask, setCurrentTask] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   
-    const toggleSidebar = () => {
-      setIsSidebarOpen(!isSidebarOpen);
-    };
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleEditTask = (task) => {
+    setCurrentTask(task);
+    setShowModal(true)
+  };
 
   return (
   <Router>
@@ -51,13 +33,12 @@ const App = () => {
       <MDBRow className="py-1">
           <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
             <Routes>
-              <Route index element={<Today context={{ isSidebarOpen }}/>} />
-              <Route path='upcoming' element={<Upcoming context={{ isSidebarOpen }}/>} />
-              <Route path='calendar' element={<Calendar1 context={{ isSidebarOpen }} />} />
-              <Route path='notes' element={<StickyNotes context={{ isSidebarOpen }} />} />
-              <Route path='personal' element={<Personal context={{ isSidebarOpen }} />} />
-              <Route path='work' element={<Work context={{ isSidebarOpen }} />} />
-              <Route path='/taskview/:id' element={<TaskView context={{ isSidebarOpen }} />} />
+              <Route index element={<Today context={{ isSidebarOpen }} onEditTask={handleEditTask}  currentTask={currentTask} setCurrentTask={setCurrentTask} showModal={showModal} setShowModal={setShowModal}/>} />
+              <Route path='upcoming' element={<Upcoming context={{ isSidebarOpen }} onEditTask={handleEditTask}  currentTask={currentTask} setCurrentTask={setCurrentTask} showModal={showModal} setShowModal={setShowModal}/>} />
+              <Route path='calendar' element={<Calendar1 context={{ isSidebarOpen }} onEditTask={handleEditTask}  currentTask={currentTask} setCurrentTask={setCurrentTask} showModal={showModal} setShowModal={setShowModal} />} />
+              <Route path='notes' element={<StickyNotes context={{ isSidebarOpen }} onEditTask={handleEditTask}  currentTask={currentTask} setCurrentTask={setCurrentTask} showModal={showModal} setShowModal={setShowModal} />} />
+              <Route path='personal' element={<Personal context={{ isSidebarOpen }} onEditTask={handleEditTask}  currentTask={currentTask} setCurrentTask={setCurrentTask} showModal={showModal} setShowModal={setShowModal} />} />
+              <Route path='work' element={<Work context={{ isSidebarOpen }} onEditTask={handleEditTask}  currentTask={currentTask} setCurrentTask={setCurrentTask} showModal={showModal} setShowModal={setShowModal} />} />
             </Routes>
       </MDBRow>
     </MDBContainer>
@@ -66,4 +47,4 @@ const App = () => {
   );
 };
 
-export default App; */
+export default App; 

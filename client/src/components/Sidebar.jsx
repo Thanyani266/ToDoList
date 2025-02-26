@@ -1,31 +1,28 @@
 import { MDBBtn, MDBCol, MDBContainer, MDBIcon, MDBListGroup, MDBListGroupItem, MDBNavbar, MDBRow, MDBTypography } from "mdb-react-ui-kit"
 import { Link } from "react-router"
 import PropTypes from 'prop-types';
+import { fetchData } from '../redux/dataSlice';
 import { useLocation } from "react-router-dom"
-import axios from "axios"
 import { useEffect, useState } from "react"
 import '../App.css'
+import { useDispatch, useSelector } from "react-redux";
 
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const [activeTab, setActiveTab] = useState("Today");
-  const [tData, setTData] = useState([]);
+
+  const dispatch = useDispatch();
+  const tasks = useSelector((state) => state.data.items);
+  const status = useSelector((state) => state.data.status);
+
+  useEffect(() => {
+      if (status === 'idle') {
+        dispatch(fetchData()); // Trigger if status is 'idle'
+      }
+  }, [status, dispatch]);
   
   const location = useLocation()
 
-  useEffect(() => {
-    getTasks();
-  }, [])
-
-  const getTasks = async () => {
-    const response = await axios.get('https://to-do-list-mu-green.vercel.app/tasks')
-    if (response.status === 200) {
-      setTData(response.data)
-    }
-  }
-
-
-  
   useEffect(() => {
     if (location.pathname === '/today') {
       setActiveTab("Today")
@@ -89,11 +86,11 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             dateToCompare.getFullYear() === nextSunday.getFullYear());
   };
 
-  const todayTasks = tData.filter(task => isToday(task.date));
-  const tomorrowTasks = tData.filter(task => isTomorrow(task.date));
-  const weekendTasks = tData.filter(task => isNextWeekend(task.date));
+  const todayTasks = tasks.filter(task => isToday(task.date));
+  const tomorrowTasks = tasks.filter(task => isTomorrow(task.date));
+  const weekendTasks = tasks.filter(task => isNextWeekend(task.date));
 
-  const personalData = tData.filter(task => {
+  const personalData = tasks.filter(task => {
     const taskDate = new Date(task.date);
     const today = new Date();
 
@@ -105,7 +102,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
 
 const personalTasks = personalData.filter(task => task.category === 'Personal');
 
-const workData = tData.filter(task => {
+const workData = tasks.filter(task => {
   const taskDate = new Date(task.date);
   const today = new Date();
 

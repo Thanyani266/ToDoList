@@ -5,15 +5,18 @@ import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import './Calendar.css'
 import PropTypes from 'prop-types';
-import { useNavigate, useParams } from "react-router"
+import { createTask, deleteTask, getSingleTask, updateTask } from '../redux/dataSlice';
+import { fetchData } from '../redux/dataSlice';
+import {useParams} from 'react-router-dom'
 import Modal from "./Modal"
 import ModalOne from "./ModalOne"
 import Badge from "./Badge"
+import { useDispatch, useSelector } from "react-redux";
 
-const Calendar1 = ({isSidebarOpen}) => {
-  const navigate = useNavigate();
-  const [tasks, setTasks] = useState([]);
+const Calendar1 = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModal, setShowModal}) => {
   const [selectedDate, setSelectedDate] = useState(null);
+  const [showModalOne, setShowModalOne] = useState(false);
+
   const [checkedItems] = useState(() => {
     const saved = localStorage.getItem("checkedItems");
     return saved ? JSON.parse(saved) : {};
@@ -23,6 +26,32 @@ const Calendar1 = ({isSidebarOpen}) => {
     localStorage.setItem("checkedItems", JSON.stringify(checkedItems));
   }, [checkedItems]);
 
+  const { taskId } = useParams();  // Get taskId from URL params
+
+  const dispatch = useDispatch();
+  const tasks = useSelector((state) => state.data.items);
+  const selectedTask = useSelector((state) => state.data.selectedTask);
+  const status = useSelector((state) => state.data.status);
+
+  useEffect(() => {
+    if (taskId) {
+      dispatch(getSingleTask(taskId));  // Fetch the single task
+    }
+  }, [taskId, dispatch]);
+
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(fetchData()); // Trigger if status is 'idle'
+    }
+  }, [status, dispatch]);
+
+  const handleGetSingleTask = (taskId) => {
+    dispatch(getSingleTask(taskId));
+    setShowModalOne(true);
+  };
+  
+  console.log(currentTask);
+
   const convertTasksToDateObjects = tData => {
     return tData.map(task => ({
       ...task,
@@ -30,22 +59,8 @@ const Calendar1 = ({isSidebarOpen}) => {
     }))
   }
 
-  const getTasks = async () => {
-    try {
-      const response = await axios.get('https://to-do-list-mu-green.vercel.app/tasks');
-      if (response.status === 200) {
-        const convertedTasks = convertTasksToDateObjects(response.data);
-        setTasks(convertedTasks);
-      }
-    } catch (error) {
-      console.error('Error fetching tasks', error);
-    }
-  };
-
-  useEffect(() => {
-    getTasks();
-    
-  });
+  const convertedTasks = convertTasksToDateObjects(tasks);
+  console.log(convertedTasks);
 
   const [list, setList] = useState([]);
 
@@ -60,9 +75,61 @@ const Calendar1 = ({isSidebarOpen}) => {
     }
   }
 
+  const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [category, setCategory] = useState('');
+    const [date, setDate] = useState('');
+  
+    useEffect(() => {
+      if (currentTask) {
+        setTitle(currentTask.title);
+        setDescription(currentTask.description);
+        setCategory(currentTask.category);
+        setDate(currentTask.date);
+      } else {
+        setTitle('');
+        setDescription('');
+        setCategory('');
+        setDate('');
+      }
+    }, [currentTask]);
+  
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      const task = { title, description, category, date };
+      if (currentTask) {
+        dispatch(updateTask({ ...currentTask, ...task })).then(() => {
+          dispatch(getSingleTask(currentTask.id));
+          setShowModalOne(false);
+          dispatch(fetchData());
+        });
+        setCurrentTask(null); // Reset current task after updating
+      } else {
+        dispatch(createTask(task));
+      }
+      setTitle('');
+      setDescription('');
+      setCategory('');
+      setDate('');
+      setShowModal(false);
+    };
+
+  const handleDelete = (id) => {
+    dispatch(deleteTask(id));
+    setShowModalOne(false);
+  };
+
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (status === 'failed') {
+    return <div>Error loading data</div>;
+  }
+
   const renderTileContent = ({ date, view }) => {
     if (view === 'month') {
-      const dayTasks = tasks.filter(task => new Date(task.date).toDateString() === date.toDateString());
+      const dayTasks = convertedTasks.filter(task => new Date(task.date).toDateString() === date.toDateString());
       return dayTasks.map(task => (
         <div key={task.id} className="highlighted-date bg-warning bg-opacity-25"></div>
       ));
@@ -76,7 +143,7 @@ const Calendar1 = ({isSidebarOpen}) => {
 
   const getTasksForSelectedDate = () => {
     if (!selectedDate) return [];
-    const taskData = tasks.filter(task => {
+    const taskData = convertedTasks.filter(task => {
       const taskDate = new Date(task.date);
       const today = new Date();
 
@@ -87,35 +154,7 @@ const Calendar1 = ({isSidebarOpen}) => {
   });
     return taskData.filter(task => task.date.toDateString() === selectedDate.toDateString());
   };
-
-  const {id} = useParams();
-
-  useEffect(() => {
-    if(id) {
-        getSingleTask(id)
-    }
-  }, [id])
-
-  const [editingTask, setEditingTask] = useState(null);
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [category, setCategory] = useState('')
-  const [date, setDate] = useState('')
-  const [showModal, setShowModal] = useState(false);
-  const [showModalOne, setShowModalOne] = useState(false);
-  const [task, setTask] = useState(null)
-
-  const getSingleTask = async (id) => {
-    try {
-      const response = await axios.get(`https://to-do-list-mu-green.vercel.app/task/${id}`);
-      if (response.status === 200) {
-        setTask({...response.data});
-        setShowModalOne(true);
-      }
-    } catch (error) {
-      console.error('Error fetching task', error);
-    }
-  };
+  
 
   const handleCloseModalOne = () => {
     setShowModalOne(false);
@@ -124,62 +163,6 @@ const Calendar1 = ({isSidebarOpen}) => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-
-  const updateTask = async (taskId, updatedData) => {
-    try {
-      const response = await axios.put(`https://to-do-list-mu-green.vercel.app/task/${taskId}`, updatedData);
-      if (response.status === 200) {
-        setTasks(tasks.map(task => (task.id === taskId ? response.data : task)));
-        setTitle('');
-        setDescription('');
-        setCategory('');
-        setDate('');
-        setEditingTask(null);
-        setShowModal(false);
-      }
-    } catch (error) {
-      console.error('Error updating task', error);
-    }
-  };
-
-  const deleteTask = async (id) => {
-    if (window.confirm("Are you sure you want to delete the task?")) {
-      try {
-        const response = await axios.delete(`https://to-do-list-mu-green.vercel.app/task/${id}`);
-        if (response.status === 200) {
-          getTasks();
-          navigate(0)
-        }
-      } catch (error) {
-        console.error('Error deleting task', error);
-      }
-    }
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const taskData = { title, description, category, date };
-    if (editingTask) {
-      await updateTask(editingTask.id, taskData);
-    }
-
-    navigate(0);
-  };
-
-  const startEditing = (task) => {
-    setTitle(task.title);
-    setDescription(task.description);
-    setCategory(task.category);
-    setDate(task.date);
-    setEditingTask(task);
-    setShowModal(true);
-  };
-
-  /*const renderTasks = () => {
-    return tasks.map(task => (
-      <li key={task.id}>{task.title} - {task.date}</li>
-    ));
-  };*/
 
   return (
     <MDBCol className={`${isSidebarOpen ? 'content-shifted': 'content'}`}>
@@ -197,58 +180,59 @@ const Calendar1 = ({isSidebarOpen}) => {
                     <div className='text-capitalize fw-bold'>
                     {task.title}</div><Badge>{task.category}</Badge>
                   </div>
-                  <MDBBtn onClick={() => startEditing(task)} className="me-1 rounded-pill btn-outline-info"><MDBIcon fas icon='edit' size="lg" /></MDBBtn>
-        <MDBBtn onClick={() => getSingleTask(task.id)} className="me-1 rounded-pill btn-outline-secondary"><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
-        <MDBBtn onClick={() => deleteTask(task.id)} className="me-1 rounded-pill btn-outline-danger">
+                  <MDBBtn onClick={() => onEditTask(task)} className="me-1 rounded-pill btn-outline-info"><MDBIcon fas icon='edit' size="lg" /></MDBBtn>
+        <MDBBtn onClick={() => handleGetSingleTask(task.id)} className="me-1 rounded-pill btn-outline-secondary"><MDBIcon fas icon="eye" size="lg" /></MDBBtn>
+        <MDBBtn onClick={() => handleDelete(task.id)} className="me-1 rounded-pill btn-outline-danger">
           <MDBIcon fas icon='trash' size='lg'/>
         </MDBBtn>
                 </MDBListGroupItem>
                 
             ))}
             <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
-                  <MDBContainer className="border p-3 rounded bg-light" key={task && task.id} style={{ textAlign: 'start' }}>
+                  { selectedTask ? (
+                    <MDBContainer className="border p-3 rounded bg-light" key={selectedTask.id} style={{ textAlign: 'start' }}>
                   <h5 className="fw-bold text-center">Task Details:</h5>
                   <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
-                    <span className="fw-bold text-muted">Title: </span>{task && task.title}
+                    <span className="fw-bold text-muted">Title: </span>{selectedTask.title}
                   </div>
                   <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
-                    <span className="fw-bold text-muted">Description: </span>{task && task.description}
+                    <span className="fw-bold text-muted">Description: </span>{selectedTask.description}
                   </div>
                   <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
-                    <span className="fw-bold text-muted">Category: </span>{task && task.category}
+                    <span className="fw-bold text-muted">Category: </span>{selectedTask.category}
                   </div>
                   <div className="fs-4 border bg-warning bg-opacity-25 p-2 rounded mb-2">
-                    <span className="fw-bold text-muted">Due date: </span>{task && task.date}
+                    <span className="fw-bold text-muted">Due date: </span>{selectedTask.date}
                   </div>
-                  <MDBBtn className="me-1" color="info" onClick={() => startEditing(task)}>
+                  <MDBBtn className="me-1" color="info" onClick={() => onEditTask(selectedTask)}>
                   <MDBIcon fas icon='edit' size="lg" />
                   </MDBBtn>
-                  <MDBBtn color="danger" onClick={() => deleteTask(task.id)}>
+                  <MDBBtn color="danger" onClick={() => handleDelete(selectedTask.id)}>
                   <MDBIcon fas icon='trash' size='lg'/>
                   </MDBBtn>
-                </MDBContainer>
+                </MDBContainer>) : (<div>No task found</div>)}
                   </ModalOne>
             <Modal show={showModal} onClose={handleCloseModal}>
-        <MDBContainer>
-        <h5 className="fw-bold">{editingTask ? 'Update Task' : 'Add New Task'}</h5>
-        <form onSubmit={handleSubmit}>
-          <MDBInput required className='mb-4' type='text' id='form1Example4' label='Title' name='title' value={title} onChange={(event) => setTitle(event.target.value)} />
-          <MDBTextArea className='mb-4' label="Description" id="textAreaExample" rows="{6}" name="description" value={description} onChange={(event) => setDescription(event.target.value)} />
-          <select className='form-select mb-4' value={category} onChange={(event) => setCategory(event.target.value)}>
-          <option>Select Category</option>
-          {list && list.map(item => (
-            <option value={item.option} key={item.id}>
-              {item.option}
-            </option>
-          ))}
-        </select>
-        <MDBInput required className='mb-4' type='date' id='form1Example8' label='date' name='date' value={date} onChange={(event) => setDate(event.target.value)} />
-          <MDBBtn type='submit' block className='bg-secondary'>
-            Update Task
-          </MDBBtn>
-        </form>
-        </MDBContainer>
-      </Modal>
+                    <MDBContainer>
+                    <h5 className="fw-bold">{currentTask ? 'Update Task' : 'Add New Task'}</h5>
+                    <form onSubmit={handleSubmit}>
+                      <MDBInput required className='mb-4' type='text' id='form1Example4' label='Title' name='title' value={title} onChange={(event) => setTitle(event.target.value)} />
+                      <MDBTextArea className='mb-4' label="Description" id="textAreaExample" rows="{6}" name="description" value={description} onChange={(event) => setDescription(event.target.value)} />
+                      <select className='form-select mb-4' value={category} onChange={(event) => setCategory(event.target.value)}>
+                      <option>Select Category</option>
+                      {list && list.map(item => (
+                        <option value={item.option} key={item.id}>
+                          {item.option}
+                        </option>
+                      ))}
+                    </select>
+                    <MDBInput required className='mb-4' type='date' id='form1Example8' label='date' name='date' value={date} onChange={(event) => setDate(event.target.value)} />
+                      <MDBBtn type='submit' block className='bg-secondary'>
+                        {currentTask ? 'Save Changes' : 'Add Task'}
+                      </MDBBtn>
+                    </form>
+                    </MDBContainer>
+                  </Modal>
           </ul>
         </div>
       )}
@@ -259,7 +243,12 @@ const Calendar1 = ({isSidebarOpen}) => {
 }
 
 Calendar1.propTypes = {
-  isSidebarOpen: PropTypes.bool
+  isSidebarOpen: PropTypes.bool,
+  onEditTask: PropTypes.any,
+  currentTask: PropTypes.any,
+  setCurrentTask: PropTypes.any,
+  showModal: PropTypes.any,
+  setShowModal: PropTypes.any
 };
 
 export default Calendar1
