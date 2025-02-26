@@ -128,7 +128,7 @@ const StickyNotes = ({isSidebarOpen, onEditNote, currentNote, setCurrentNote, sh
             </MDBCol> )
             }) : 
             <>
-            <MDBTypography tag='div' className="text-center fw-bold text-warning bg-secondary bg-opacity-25 mt-5">There are no note(s)</MDBTypography>
+            <MDBTypography tag='div' className="text-center fw-bold text-warning bg-secondary bg-opacity-25 mt-5 py-5">No note(s)</MDBTypography>
             <MDBBtn className="w-100 text-start mt-5 bg-transparent border text-success" onClick={handleOpenModal}><MDBIcon fas icon="plus" className="me-2" /> new note</MDBBtn>
             </>}
             
