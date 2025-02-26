@@ -11,7 +11,7 @@ import { TrimDesc } from "./TrimDesc";
 import { useDispatch, useSelector } from "react-redux";
 
 
-const StickyNotes = ({isSidebarOpen, onEditNote, currentNote, setCurrentNode, showModal, setShowModal}) => { 
+const StickyNotes = ({isSidebarOpen, onEditNote, currentNote, setCurrentNote, showModal, setShowModal}) => { 
   const [showModalOne, setShowModalOne] = useState(false);
 
   const { noteId } = useParams();  // Get taskId from URL params
@@ -65,7 +65,7 @@ const StickyNotes = ({isSidebarOpen, onEditNote, currentNote, setCurrentNode, sh
           setShowModalOne(false);
           dispatch(fetchNotes());
         });
-        setCurrentNode(null); // Reset current note after updating
+        setCurrentNote(null); // Reset current note after updating
       } else {
         dispatch(createNote(note));
       }
@@ -177,7 +177,7 @@ StickyNotes.propTypes = {
   isSidebarOpen: PropTypes.bool,
   onEditNote: PropTypes.any,
   currentNote: PropTypes.any,
-  setCurrentNode: PropTypes.any,
+  setCurrentNote: PropTypes.any,
   showModal: PropTypes.any,
   setShowModal: PropTypes.any
 };
