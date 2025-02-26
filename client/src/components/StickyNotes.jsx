@@ -1,134 +1,107 @@
 import { MDBBtn, MDBCard, MDBCardBody, MDBCardText, MDBCardTitle, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBRow, MDBTextArea, MDBTypography } from "mdb-react-ui-kit"
 import { useEffect, useState } from "react";
-import axios from 'axios'
 import ModalOne from "./ModalOne";
 import PropTypes from 'prop-types';
+import { createNote, deleteNote, getSingleNote, updateNote } from '../redux/notesSlice';
 import Modal from "./Modal";
-import { useParams } from "react-router";
+import { fetchNotes } from '../redux/notesSlice';
+import {useParams} from 'react-router-dom'
 import { TrimTitle } from "./TrimTitle";
 import { TrimDesc } from "./TrimDesc";
+import { useDispatch, useSelector } from "react-redux";
 
 
-const StickyNotes = ({isSidebarOpen}) => {
-    const [data, setData] = useState([]);
-    useEffect(() => {
-        getNotes();
-    }, [])
+const StickyNotes = ({isSidebarOpen, onEditNote, currentNote, setCurrentNode, showModal, setShowModal}) => { 
+  const [showModalOne, setShowModalOne] = useState(false);
 
-    const getNotes = async () => {
-      const response = await axios.get('https://to-do-list-mu-green.vercel.app/notes')
-      if (response.status === 200) {
-        setData(response.data)
-      }
-    }
+  const { noteId } = useParams();  // Get taskId from URL params
 
-  const [notes, setNotes] = useState([]);
-  const [editingNote, setEditingNote] = useState(null);
+    const dispatch = useDispatch();
+      const notes = useSelector((state) => state.notes.items);
+      const selectedNote = useSelector((state) => state.notes.selectedNote);
+      const status = useSelector((state) => state.notes.status);
+    
+      useEffect(() => {
+        if (noteId) {
+          dispatch(getSingleNote(noteId));  // Fetch the single task
+        }
+      }, [noteId, dispatch]);
+    
+      useEffect(() => {
+        if (status === 'idle') {
+          dispatch(fetchNotes()); // Trigger if status is 'idle'
+        }
+      }, [status, dispatch]);
+    
+      const handleGetSingleNote = (noteId) => {
+        dispatch(getSingleNote(noteId));
+        setShowModalOne(true);
+      };
+      
+      console.log(currentNote);
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [background, setBackground] = useState('')
-  const [showModal, setShowModal] = useState(false);
-  const [showModalOne, setShowModalOne] = useState(false);
-  const [note, setNote] = useState(null)
-
-  const deleteNote = async (id) => {
-    if(window.confirm("Are you sure you want to delete the note?")){
-      const response = await axios.delete(`https://to-do-list-mu-green.vercel.app/note/${id}`)
-      if (response.status === 200) {
-        getNotes();
-      }
-    }
-  }
- 
-  const {id} = useParams()
-  useEffect(() => {
-    if(id) {
-        getSingleNote(id)
-    }
-  }, [id])
-
-  const getSingleNote = async (id) => {
-    const response = await axios.get(`https://to-do-list-mu-green.vercel.app/note/${id}`)
-    if (response.status === 200) {
-        setNote({...response.data});
-        setShowModalOne(true);
-      }
-  }
-
-    const addNote = async (noteData) => {
-        try {
-          const response = await axios.post('https://to-do-list-mu-green.vercel.app/note', noteData);
-          if (response.status === 200) {
-            console.log('Note added successfully:', response.data);
-            // Optionally reset form fields here
-            setTitle('');
-            setDescription('');
-            setBackground('');
-            setShowModal(false);
-          }
-        } catch (error) {
-          console.error('Error adding note:', error);
-        }
-    }
-
-    const updateNote = async (noteId, updatedData) => {
-        try {
-          const response = await axios.put(`https://to-do-list-mu-green.vercel.app/note/${noteId}`, updatedData);
-          if (response.status === 200) {
-            console.log('Note updated successfully:', response.data);
-            // Update the tasks list
-            setNotes(notes.map(note => (note.id === noteId ? response.data : note)));
-            // Optionally reset form fields here
-            setTitle('');
-            setDescription('');
-            setBackground('');
-            setEditingNote(null);
-            setShowModal(false);
-          }
-        } catch (error) {
-          console.error('Error updating note:', error);
-        }
-      };
-
-      const handleCloseModalOne = () => {
-        setShowModalOne(false);
-      }
-
-      const handleOpenModal = () => {
+  
+    useEffect(() => {
+      if (currentNote) {
+        setTitle(currentNote.title);
+        setDescription(currentNote.description);
+        setBackground(currentNote.background);
+      } else {
         setTitle('');
         setDescription('');
         setBackground('');
-        setEditingNote(null);
-        setShowModal(true);
-      };
-    
-      const handleCloseModal = () => {
-        setShowModal(false);
-      };
+      }
+    }, [currentNote]);
   
-      const handleSubmit = (event) => {
-        event.preventDefault();
-        const noteData = { title, description, background };
-        if (editingNote) {
-          updateNote(editingNote.id, noteData);
-          setShowModal(false)
-          setShowModalOne(false)
-        } else {
-          addNote(noteData);
-          setShowModal(false)
-          setShowModalOne(false)
-        }
-      };
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      const note = { title, description, background };
+      if (currentNote) {
+        dispatch(updateNote({ ...currentNote, ...note })).then(() => {
+          dispatch(getSingleNote(currentNote.id));
+          setShowModalOne(false);
+          dispatch(fetchNotes());
+        });
+        setCurrentNode(null); // Reset current note after updating
+      } else {
+        dispatch(createNote(note));
+      }
+      setTitle('');
+      setDescription('');
+      setBackground('');
+      setShowModal(false);
+    };
 
-      
-      const startEditing = (note) => {
-        setTitle(note.title);
-        setDescription(note.description);
-        setBackground(note.background);
-        setEditingNote(note);
-        setShowModal(true);
-      };
+  const handleDelete = (id) => {
+    dispatch(deleteNote(id));
+    setShowModalOne(false);
+  };
+
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (status === 'failed') {
+    return <div>Error loading data</div>;
+  }
+
+    const handleCloseModalOne = () => {
+      setShowModalOne(false);
+    }
+
+    const handleOpenModal = () => {
+      setTitle('');
+      setDescription('');
+      setBackground('');
+      setShowModal(true);
+    };
+  
+    const handleCloseModal = () => {
+      setShowModal(false);
+    };
 
     
   return (
@@ -138,7 +111,7 @@ const StickyNotes = ({isSidebarOpen}) => {
         </MDBTypography>
         <MDBContainer className="mt-4 border rounded p-5">
             <MDBRow>
-            {data && data.map((item) => {
+            {notes.length >= 1 ? notes.map((item) => {
                 return (
             <MDBCol lg='4' md='6' className="mb-3" key={item.id}>
             <MDBCard style={{height: '300px'}} className={`${item.background} bg-opacity-25 pe-auto`}>
@@ -148,25 +121,31 @@ const StickyNotes = ({isSidebarOpen}) => {
                         {TrimDesc(item.description)}
                     </MDBCardText>
                     <div className="mt-auto">
-                    <MDBBtn className="btn-outline-dark p-0 fs-4 px-1"><MDBIcon fas icon="eye" onClick={() => getSingleNote(item.id)} /></MDBBtn>
+                    <MDBBtn className="btn-outline-dark p-0 fs-4 px-1"><MDBIcon fas icon="eye" onClick={() => handleGetSingleNote(item.id)} /></MDBBtn>
                     </div>       
                 </MDBCardBody>
             </MDBCard>
             </MDBCol> )
-            })}
+            }) : 
+            <>
+            <MDBTypography tag='div' className="text-center fw-bold text-warning bg-secondary bg-opacity-25 mt-5">There are no note(s)</MDBTypography>
+            <MDBBtn className="w-100 text-start mt-5 bg-transparent border text-success" onClick={handleOpenModal}><MDBIcon fas icon="plus" className="me-2" /> new note</MDBBtn>
+            </>}
+            
             <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
-               <MDBContainer style={{textAlign: 'start'}}>
+               {selectedNote ? (
+                <MDBContainer style={{textAlign: 'start'}} key={selectedNote.id}>
                <h5 className="fw-bold text-center">Note: </h5>
-               <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: </span>{note && note.title}</div>
-               <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Description: </span>{note && note.description}</div>
-               <MDBBtn className="me-1" onClick={() => startEditing(note)}>edit</MDBBtn>
-               <MDBBtn onClick={() => deleteNote(note.id)}>delete</MDBBtn>
+               <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: </span>{selectedNote.title}</div>
+               <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Description: </span>{selectedNote.description}</div>
+               <MDBBtn className="me-1" onClick={() => onEditNote(selectedNote)}>edit</MDBBtn>
+               <MDBBtn onClick={() => handleDelete(selectedNote.id)}>delete</MDBBtn>
                     
-               </MDBContainer>
+               </MDBContainer>) : (<div>No note found</div>)}
                   </ModalOne>
             <Modal show={showModal} onClose={handleCloseModal}>
         <MDBContainer>
-        <h5 className="fw-bold">{editingNote ? 'Update Note' : 'Add New Note'}</h5>
+        <h5 className="fw-bold">{currentNote ? 'Update Note' : 'Add New Note'}</h5>
         <form onSubmit={handleSubmit}>
           <MDBInput required className='mb-4' type='text' id='form1Example14' label='Title' name='title' value={title} onChange={(event) => setTitle(event.target.value)} />
           <MDBTextArea className='mb-4' label="Description" id="textAreauExample" rows="{6}" name="description" value={description} onChange={(event) => setDescription(event.target.value)} />
@@ -178,7 +157,7 @@ const StickyNotes = ({isSidebarOpen}) => {
             <option value="bg-danger">Red</option>
           </select>
           <MDBBtn type='submit' block className='bg-secondary'>
-            {editingNote ? 'Update Note' : 'Add Note'}
+            {currentNote ? 'Update Note' : 'Add Note'}
           </MDBBtn>
         </form>
         </MDBContainer>
@@ -195,7 +174,12 @@ const StickyNotes = ({isSidebarOpen}) => {
 }
 
 StickyNotes.propTypes = {
-  isSidebarOpen: PropTypes.bool
+  isSidebarOpen: PropTypes.bool,
+  onEditNote: PropTypes.any,
+  currentNote: PropTypes.any,
+  setCurrentNode: PropTypes.any,
+  showModal: PropTypes.any,
+  setShowModal: PropTypes.any
 };
 
 export default StickyNotes

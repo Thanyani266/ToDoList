@@ -16,6 +16,7 @@ const App = () => {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [currentTask, setCurrentTask] = useState(null);
+  const [currentNote, setCurrentNote] = useState(null);
   const [showModal, setShowModal] = useState(false);
   
   const toggleSidebar = () => {
@@ -24,6 +25,11 @@ const App = () => {
 
   const handleEditTask = (task) => {
     setCurrentTask(task);
+    setShowModal(true)
+  };
+
+  const handleEditNote = (note) => {
+    setCurrentNote(note);
     setShowModal(true)
   };
 
@@ -36,7 +42,7 @@ const App = () => {
               <Route index element={<Today context={{ isSidebarOpen }} onEditTask={handleEditTask}  currentTask={currentTask} setCurrentTask={setCurrentTask} showModal={showModal} setShowModal={setShowModal}/>} />
               <Route path='upcoming' element={<Upcoming context={{ isSidebarOpen }} onEditTask={handleEditTask}  currentTask={currentTask} setCurrentTask={setCurrentTask} showModal={showModal} setShowModal={setShowModal}/>} />
               <Route path='calendar' element={<Calendar1 context={{ isSidebarOpen }} onEditTask={handleEditTask}  currentTask={currentTask} setCurrentTask={setCurrentTask} showModal={showModal} setShowModal={setShowModal} />} />
-              <Route path='notes' element={<StickyNotes context={{ isSidebarOpen }} onEditTask={handleEditTask}  currentTask={currentTask} setCurrentTask={setCurrentTask} showModal={showModal} setShowModal={setShowModal} />} />
+              <Route path='notes' element={<StickyNotes context={{ isSidebarOpen }} onEditNote={handleEditNote}  currentNote={currentNote} setCurrentNote={setCurrentNote} showModal={showModal} setShowModal={setShowModal} />} />
               <Route path='personal' element={<Personal context={{ isSidebarOpen }} onEditTask={handleEditTask}  currentTask={currentTask} setCurrentTask={setCurrentTask} showModal={showModal} setShowModal={setShowModal} />} />
               <Route path='work' element={<Work context={{ isSidebarOpen }} onEditTask={handleEditTask}  currentTask={currentTask} setCurrentTask={setCurrentTask} showModal={showModal} setShowModal={setShowModal} />} />
             </Routes>
