@@ -116,7 +116,7 @@ const workTasks = workData.filter(task => task.category === 'Work');
 
   return (
     <>
-    <header className={`${isSidebarOpen ? 'd-none' : 'd-block'}`}> 
+    <header className={`${isSidebarOpen ? 'd-none' : 'd-block'} mb-3`}> 
       <MDBNavbar expand='lg' light bgColor='white' fixed>
         <MDBContainer fluid>
           <MDBBtn className={`btn-outline-warning`} onClick={toggleSidebar}>
