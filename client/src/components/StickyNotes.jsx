@@ -135,11 +135,15 @@ const StickyNotes = ({isSidebarOpen, onEditNote, currentNote, setCurrentNote, sh
             <ModalOne show={showModalOne} onClose={handleCloseModalOne}>
                {selectedNote ? (
                 <MDBContainer style={{textAlign: 'start'}} key={selectedNote.id}>
-               <h5 className="fw-bold text-center">Note: </h5>
-               <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Title: </span>{selectedNote.title}</div>
-               <div className="fs4 border p-2 rounded mb-2"><span className="fw-bold text-muted">Description: </span>{selectedNote.description}</div>
-               <MDBBtn className="me-1" onClick={() => onEditNote(selectedNote)}>edit</MDBBtn>
-               <MDBBtn onClick={() => handleDelete(selectedNote.id)}>delete</MDBBtn>
+               <h5 className="fw-bold text-center">Note Details: </h5>
+               <div className="fs4 border bg-secondary bg-opacity-25 p-2 rounded mb-2"><span className="fw-bold text-warning">Title: </span><span className="text-light">{selectedNote.title}</span></div>
+               <div className="fs4 border bg-secondary bg-opacity-25 p-2 rounded mb-2"><span className="fw-bold text-warning">Description: </span><span>{selectedNote.description}</span></div>
+               <MDBBtn className="me-1" color="info" onClick={() => onEditNote(selectedNote)}>
+               <MDBIcon fas icon='edit' size="lg" />
+               </MDBBtn>
+               <MDBBtn color="danger" onClick={() => handleDelete(selectedNote.id)}>
+               <MDBIcon fas icon='trash' size='lg'/>
+               </MDBBtn>
                     
                </MDBContainer>) : (<div>No note found</div>)}
                   </ModalOne>
@@ -162,11 +166,11 @@ const StickyNotes = ({isSidebarOpen, onEditNote, currentNote, setCurrentNote, sh
         </form>
         </MDBContainer>
       </Modal>
-            <MDBCol lg='4' md='6' className="mb-3 my-auto">
+            {notes.length >= 1 ? (<MDBCol lg='4' md='6' className="mb-3 my-auto">
             <MDBCard className="bg-secondary text-center text-light p-5" onClick={handleOpenModal} style={{cursor: 'pointer'}}>
             <MDBIcon fas icon="plus" className="display-5"/>
             </MDBCard>
-            </MDBCol>
+            </MDBCol>) : ''}
             </MDBRow>
         </MDBContainer>
     </MDBCol>
