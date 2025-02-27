@@ -185,9 +185,9 @@ const Upcoming = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showM
               dateToCompare.getFullYear() === nextSunday.getFullYear());
     };
   
-  const todayTasks = tasks.filter(task => isToday(task.date));
-  const tomorrowTasks = tasks.filter(task => isTomorrow(task.date));
-  const weekendTasks = tasks.filter(task => isNextWeekend(task.date));
+  const todayTasks = tasks.filter(task => isToday(task.date)).sort((a, b) => new Date(a.date) - new Date(b.date));
+  const tomorrowTasks = tasks.filter(task => isTomorrow(task.date)).sort((a, b) => new Date(a.date) - new Date(b.date));
+  const weekendTasks = tasks.filter(task => isNextWeekend(task.date)).sort((a, b) => new Date(a.date) - new Date(b.date));
 
   console.log('data => ', tasks);
   

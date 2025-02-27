@@ -102,7 +102,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
   };
 
   if (status === 'loading') {
-    return <div className={`${isSidebarOpen ? 'content-shifted': 'content'}`}>Loading...</div>;
+    return <div className='col-md-8 float-end'>Loading...</div>;
   }
 
   if (status === 'failed') {
@@ -147,7 +147,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
              dateToCompare.getFullYear() === today.getFullYear();
     };
   
-    const todayTasks = tasks.filter(task => isToday(task.date));
+    const todayTasks = tasks.filter(task => isToday(task.date)).sort((a, b) => new Date(a.date) - new Date(b.date));
 
   console.log(todayTasks);
   

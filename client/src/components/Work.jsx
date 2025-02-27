@@ -149,7 +149,7 @@ const Work = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModal
         return taskDate >= today;
     });
 
-    const workTasks = workData.filter(task => task.category === 'Work');
+    const workTasks = workData.filter(task => task.category === 'Work').sort((a, b) => new Date(a.date) - new Date(b.date));
 
   console.log('data => ', tasks);
   console.log('workTasks: ', workTasks);
