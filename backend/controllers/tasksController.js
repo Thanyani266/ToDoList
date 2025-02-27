@@ -3,8 +3,40 @@ const { v4: uuid } = require('uuid');
 
 const API_URL = 'https://json-server-data-5js7.onrender.com/tasks'; // Replace with your web server URL
 
-// Getting all tasks
+// Deleting tasks with dates before today
+const deleteOldTasks = async () => {
+    try {
+        const response = await axios.get(API_URL);
+        const tasks = response.data;
+        const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+
+        const deletePromises = tasks
+            .filter(task => new Date(task.date) < new Date(today))
+            .map(task => axios.delete(`${API_URL}/${task.id}`));
+
+        await Promise.all(deletePromises);
+    } catch (err) {
+        console.error('Error deleting old tasks:', err.message);
+    }
+};
+
+// Getting tasks with dates from today onwards
 const getTasks = async (req, res) => {
+    try {
+        await deleteOldTasks(); // Ensure old tasks are deleted before getting new ones
+        const response = await axios.get(API_URL);
+        const tasks = response.data;
+        const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+
+        const tasksFromToday = tasks.filter(task => new Date(task.date) >= new Date(today));
+        res.json(tasksFromToday);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+// Getting all tasks
+const getTasksFromToday = async (req, res) => {
     try {
         const response = await axios.get(API_URL);
         res.json(response.data);

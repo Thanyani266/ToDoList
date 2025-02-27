@@ -148,6 +148,13 @@ const Personal = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showM
         return taskDate >= today;
     });
 
+    const formatDate = (date) => {
+      const calendarFormat = moment(date).calendar();
+      const fallbackFormat = moment(date).format('dddd, D MMMM');
+    
+      return calendarFormat.length > 12 ? calendarFormat.substring(0, calendarFormat.length - 12) : fallbackFormat;
+    };
+
     const personalTasks = personalData.filter(task => task.category === 'Personal');
 
   console.log('data => ', tasks);
@@ -174,7 +181,7 @@ const Personal = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showM
                 /></div>
                 <div className={`d-flex`}>
                   <Badge>{item.category}</Badge>
-                  <span className={`${checkedItems[item.id] ? 'text-decoration-line-through' : ''} fst-italic text-warning fw-bold ms-5`}>{moment(item.date).calendar().substring(0, moment(item.date).calendar().length-12)}</span>
+                  <span className={`${checkedItems[item.id] ? 'text-decoration-line-through' : ''} fst-italic text-warning fw-bold ms-5`}>{formatDate(item.date)}</span>
                 </div>
             </div>
             <MDBBtn onClick={() => onEditTask(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill btn-outline-info`}><MDBIcon fas icon='edit' size="lg" /></MDBBtn>
