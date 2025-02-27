@@ -120,11 +120,11 @@ const Calendar1 = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, show
   };
 
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return <div className='col-md-8 float-end'>Loading...</div>;
   }
 
   if (status === 'failed') {
-    return <div>Error loading data</div>;
+    return <div className='col-md-8 float-end'>Error loading data</div>;
   }
 
   const renderTileContent = ({ date, view }) => {

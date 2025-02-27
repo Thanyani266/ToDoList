@@ -101,11 +101,11 @@ const Personal = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showM
   };
 
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return <div className='col-md-8 float-end'>Loading...</div>;
   }
 
   if (status === 'failed') {
-    return <div>Error loading data</div>;
+    return <div className='col-md-8 float-end'>Error loading data</div>;
   }
 
   const getLists = async () => {

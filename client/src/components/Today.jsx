@@ -106,7 +106,7 @@ const Today = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModa
   }
 
   if (status === 'failed') {
-    return <div className={`${isSidebarOpen ? 'content-shifted': 'content'}`}>Error loading data</div>;
+    return <div className='col-md-8 float-end'>Error loading data</div>;
   }
 
   const getLists = async () => {

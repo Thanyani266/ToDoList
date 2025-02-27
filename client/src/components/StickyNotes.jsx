@@ -81,11 +81,11 @@ const StickyNotes = ({isSidebarOpen, onEditNote, currentNote, setCurrentNote, sh
   };
 
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return <div className='col-md-8 float-end'>Loading...</div>;
   }
 
   if (status === 'failed') {
-    return <div>Error loading data</div>;
+    return <div className='col-md-8 float-end'>Error loading data</div>;
   }
 
     const handleCloseModalOne = () => {
@@ -136,7 +136,7 @@ const StickyNotes = ({isSidebarOpen, onEditNote, currentNote, setCurrentNote, sh
                {selectedNote ? (
                 <MDBContainer style={{textAlign: 'start'}} key={selectedNote.id}>
                <h5 className="fw-bold text-center">Note Details: </h5>
-               <div className="fs4 border bg-secondary bg-opacity-25 p-2 rounded mb-2"><span className="fw-bold text-warning">Title: </span><span className="text-light">{selectedNote.title}</span></div>
+               <div className="fs4 border bg-secondary bg-opacity-25 p-2 rounded mb-2"><span className="fw-bold text-warning">Title: </span><span>{selectedNote.title}</span></div>
                <div className="fs4 border bg-secondary bg-opacity-25 p-2 rounded mb-2"><span className="fw-bold text-warning">Description: </span><span>{selectedNote.description}</span></div>
                <MDBBtn className="me-1" color="info" onClick={() => onEditNote(selectedNote)}>
                <MDBIcon fas icon='edit' size="lg" />

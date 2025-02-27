@@ -101,11 +101,11 @@ const Work = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModal
   };
 
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return <div className='col-md-8 float-end'>Loading...</div>;
   }
 
   if (status === 'failed') {
-    return <div>Error loading data</div>;
+    return <div className='col-md-8 float-end'>Error loading data</div>;
   }
 
   const getLists = async () => {
@@ -149,6 +149,13 @@ const Work = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModal
         return taskDate >= today;
     });
 
+    const formatDate = (date) => {
+          const calendarFormat = moment(date).calendar();
+          const fallbackFormat = moment(date).format('dddd, D MMMM');
+        
+          return calendarFormat.length > 12 ? calendarFormat.substring(0, calendarFormat.length - 12) : fallbackFormat;
+    };
+
     const workTasks = workData.filter(task => task.category === 'Work').sort((a, b) => new Date(a.date) - new Date(b.date));
 
   console.log('data => ', tasks);
@@ -174,7 +181,7 @@ const Work = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showModal
                 /></div>
                 <div className={`d-flex`}>
                   <Badge>{item.category}</Badge>
-                  <span className={`${checkedItems[item.id] ? 'text-decoration-line-through' : ''} fst-italic text-warning fw-bold ms-5`}>{moment(item.date).calendar().substring(0, moment(item.date).calendar().length-12)}</span>
+                  <span className={`${checkedItems[item.id] ? 'text-decoration-line-through' : ''} fst-italic text-warning fw-bold ms-5`}>{formatDate(item.date)}</span>
                 </div>
             </div>
             <MDBBtn onClick={() => onEditTask(item)} className={`${checkedItems[item.id] ? 'd-none' : ''} me-1 rounded-pill bg-transparent border border-info`}><MDBIcon fas icon='edit' color="info" size="lg" /></MDBBtn>
