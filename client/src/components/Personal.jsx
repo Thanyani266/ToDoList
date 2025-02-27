@@ -155,7 +155,9 @@ const Personal = ({isSidebarOpen, onEditTask, currentTask, setCurrentTask, showM
       return calendarFormat.length > 12 ? calendarFormat.substring(0, calendarFormat.length - 12) : fallbackFormat;
     };
 
-    const personalTasks = personalData.filter(task => task.category === 'Personal');
+    const personalTasks = personalData
+                          .filter(task => task.category === 'Personal')
+                          .sort((a, b) => new Date(a.date) - new Date(b.date));
 
   console.log('data => ', tasks);
   console.log(personalTasks);
