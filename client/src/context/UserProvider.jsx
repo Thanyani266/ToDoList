@@ -6,28 +6,26 @@ import { UserContext } from './UserContext';
 // Create a context with default value
 
 const UserProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);
 
-    axios.defaults.withCredentials = true;
+  axios.defaults.withCredentials = true;
 
-    useEffect(() => {
-    axios.get('https://to-do-list-mu-green.vercel.app/user', {withCredentials: true})
-    .then(res => {
-      setUser(res.data)
-    }).catch(err => console.log(err))
-  }, [])
+  useEffect(() => {
+    axios
+      .get('https://to-do-list-mu-green.vercel.app/user', {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setUser(res.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
-    return (
-        <UserContext.Provider value={ user }>
-            {children}
-        </UserContext.Provider>
-    );
+  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
 };
 
 UserProvider.propTypes = {
-    children: PropTypes.node
+  children: PropTypes.node,
 };
 
-export default UserProvider
-
-
+export default UserProvider;

@@ -5,6 +5,6 @@ import notesReducer from '../redux/notesSlice';
 export const store = configureStore({
   reducer: {
     data: dataReducer,
-    notes: notesReducer
+    notes: notesReducer,
   },
 });

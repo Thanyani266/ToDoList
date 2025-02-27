@@ -10,7 +10,9 @@ const Modal = ({ show, onClose, children }) => {
   return (
     <div className="modal-backdrop">
       <div className="modal-content">
-        <button onClick={onClose} className="modal-close-btn border rounded"><MDBIcon fas icon="times" /></button>
+        <button onClick={onClose} className="modal-close-btn border rounded">
+          <MDBIcon fas icon="times" />
+        </button>
         {children}
       </div>
     </div>
@@ -18,11 +20,9 @@ const Modal = ({ show, onClose, children }) => {
 };
 
 Modal.propTypes = {
-    children: PropTypes.element,
-    show: PropTypes.any,
-    onClose: PropTypes.any
+  children: PropTypes.element,
+  show: PropTypes.any,
+  onClose: PropTypes.any,
 };
 
 export default Modal;
-
-
